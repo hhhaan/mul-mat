@@ -1,9 +1,5 @@
-import { Layout } from '@/src/widgets/Layout';
+import { HomeScreen } from '@/src/screens';
 
 export default function Home() {
-    return (
-        <Layout>
-            <h1>hello mulmat!</h1>
-        </Layout>
-    );
+    return <HomeScreen />;
 }
