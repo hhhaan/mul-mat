@@ -1,7 +1,5 @@
+import { CalculatorScreen } from '@/src/screens';
+
 export default function CalculatorPage() {
-    return (
-        <div>
-            <div>CalculatorPage</div>
-        </div>
-    );
+    return <CalculatorScreen />;
 }
