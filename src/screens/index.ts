@@ -1,1 +1,2 @@
-export { MyPageScreen } from './my-page/my-page-screen';
+export { MyPageScreen } from './my-page/screen';
+export { BottledWaterScreen } from './bottled-water/screen';
