@@ -1,5 +1,5 @@
 'use client';
-import { Layout } from '@/src/widgets/Layout';
+import { Layout } from '@/src/widgets/layout';
 import { Droplet, Coffee, Droplets, ChevronDown, AlertTriangle, Search } from 'lucide-react';
 import { useState } from 'react';
 

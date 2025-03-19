@@ -1,6 +1,6 @@
 'use client';
 import { useState } from 'react';
-import { Layout } from '@/src/widgets/Layout';
+import { Layout } from '@/src/widgets/layout';
 import { useRouter } from 'next/navigation';
 import { createClient } from '@/src/shared/utils/supabase/client';
 
