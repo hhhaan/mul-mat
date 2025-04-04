@@ -1,3 +1,5 @@
+import { Droplets } from 'lucide-react';
+
 export const Header = () => {
     return (
         <header className="bg-gradient-to-r from-blue-600 to-blue-400 text-white p-5 shadow-lg">
