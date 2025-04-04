@@ -40,23 +40,10 @@ export const useAddressSearch = () => {
      * 추천 항목 클릭 시 처리
      * todo 여기서 정수장 받을 필요있는지 생각해보기
      */
-    const handleSuggestionClick = useCallback(
-        (suggestion: string) => {
-            setQuery(suggestion);
-            setShowSuggestions(false);
-
-            const matchingRow = getMatchingAddress(suggestion);
-            if (matchingRow) {
-                setSelectedAddress(matchingRow); // 상태 업데이트
-                setShowResult(true); // 결과 표시 활성화
-                console.log('정수장 이름:', matchingRow.fclt_nm);
-            } else {
-                setSelectedAddress(null);
-                console.log('일치하는 데이터가 없습니다.');
-            }
-        },
-        [getMatchingAddress]
-    );
+    const handleSuggestionClick = useCallback((suggestion: string) => {
+        setQuery(suggestion);
+        setShowSuggestions(false);
+    }, []);
 
     /**
      * 검색 버튼 클릭 시 실행되는 검색 함수
