@@ -1,8 +1,15 @@
 import { forwardRef } from 'react';
 
+interface AddressSuggestion {
+    data: {
+        idx: string;
+        full_address: string;
+    };
+}
+
 interface SuggestionListProps {
-    suggestions: string[];
-    handleSuggestionClick: (suggestion: string) => void;
+    suggestions: AddressSuggestion[];
+    handleSuggestionClick: (suggestion: AddressSuggestion) => void;
 }
 
 export const SuggestionList = forwardRef<HTMLDivElement, SuggestionListProps>(
@@ -16,11 +23,11 @@ export const SuggestionList = forwardRef<HTMLDivElement, SuggestionListProps>(
                 <ul>
                     {suggestions.map((suggestion, index) => (
                         <li
-                            key={index}
+                            key={suggestion.data.idx || index}
                             className="px-3 py-2 text-sm text-gray-700 hover:bg-blue-50 cursor-pointer"
                             onClick={() => handleSuggestionClick(suggestion)}
                         >
-                            {suggestion}
+                            {suggestion.data.full_address}
                         </li>
                     ))}
                 </ul>

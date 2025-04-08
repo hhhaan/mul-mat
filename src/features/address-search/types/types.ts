@@ -1,6 +1,10 @@
+// 주소 데이터 타입 정의
 export interface Address {
-    idx: number;
-    fclt_nm: string;
-    full_addr: string;
-    is_wide: boolean;
+    idx: string;
+    full_address: string;
+}
+
+// API 응답 타입 정의
+export interface AddressSuggestion {
+    data: Address;
 }

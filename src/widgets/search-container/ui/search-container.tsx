@@ -1,38 +1,48 @@
-import { SearchInput, SuggestionList } from '@/src/features/address-search';
-import { useAddressSearch } from '@/src/features/address-search/hooks';
-
+import { SuggestionList, SearchInput, SearchButton } from '@/src/features/address-search';
+import { useAddressSearch } from '@/src/features/address-search/hooks/useAddressSearch';
+import { useFetchWaterQuality } from '@/src/features/water-quality/hooks/useFetchWaterQuality';
 export const SearchContainer = () => {
     const {
         query,
         suggestions,
         showSuggestions,
+        isSearchFocused,
+        isLoading,
         suggestionsRef,
-
-        // 로딩 상태
-        isLoading: dataLoading,
-
-        // 이벤트 핸들러
-        handleSearchChange,
+        selectedAddress,
+        handleQueryChange,
         handleSuggestionClick,
-        handleSearch,
         handleFocus,
         handleBlur,
     } = useAddressSearch();
+
+    const { refetch } = useFetchWaterQuality(selectedAddress);
+
+    const handleSearch = async () => {
+        if (selectedAddress?.idx) {
+            refetch();
+        }
+    };
 
     return (
         <div className="px-4 py-3">
             <div className="bg-white rounded-lg shadow-sm p-3">
                 <div className="flex items-center">
                     <div className="flex-1 relative">
-                        <SearchInput
-                            value={query}
-                            onChange={(e) => handleSearchChange(e.target.value)}
-                            onFocus={handleFocus}
-                            onBlur={handleBlur}
-                            onSearch={handleSearch}
-                            isLoading={dataLoading}
-                            placeholder="지역명 입력 (예: 서울시 강남구)"
-                        />
+                        <div
+                            className={`flex border ${
+                                isSearchFocused ? 'border-blue-500 ring-1 ring-blue-100' : 'border-gray-300'
+                            } rounded-lg overflow-hidden transition-all duration-200`}
+                        >
+                            <SearchInput
+                                value={query}
+                                onChange={handleQueryChange}
+                                onFocus={handleFocus}
+                                onBlur={handleBlur}
+                            />
+                            <SearchButton isLoading={isLoading} onClick={handleSearch} />
+                        </div>
+
                         {showSuggestions && (
                             <SuggestionList
                                 ref={suggestionsRef}
