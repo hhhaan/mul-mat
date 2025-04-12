@@ -1,7 +1,7 @@
 import { SuggestionList, SearchInput, SearchButton } from '@/src/features/address-search';
 import { useAddressSearch } from '@/src/features/address-search/hooks/useAddressSearch';
-import { useFetchWaterQuality } from '@/src/features/water-quality/hooks/useFetchWaterQuality';
-export const SearchContainer = () => {
+
+export const SearchContainer = ({ setSelectedId }: { setSelectedId: (id: string) => void }) => {
     const {
         query,
         suggestions,
@@ -16,11 +16,11 @@ export const SearchContainer = () => {
         handleBlur,
     } = useAddressSearch();
 
-    const { refetch } = useFetchWaterQuality(selectedAddress);
-
     const handleSearch = async () => {
-        if (selectedAddress?.idx) {
-            refetch();
+        try {
+            setSelectedId(selectedAddress?.idx ?? '');
+        } catch (error) {
+            console.error('Error fetching water quality:', error);
         }
     };
 

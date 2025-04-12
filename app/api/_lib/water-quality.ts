@@ -4,7 +4,9 @@ import { WaterQualityItem } from '../_types';
 export async function fetchWaterQualityData(
     fclt_addr: string,
     fclt_nm: string,
-    fclt_type: string
+    fclt_type: string,
+    year?: string | null,
+    month?: string | null
 ): Promise<WaterQualityItem | null> {
     if (!fclt_addr || !fclt_nm || !fclt_type) {
         throw new Error('주소, 이름, 타입이 필요합니다.');
@@ -12,17 +14,18 @@ export async function fetchWaterQualityData(
 
     let apiUrl = '';
     if (fclt_type === '광역') {
-        apiUrl = `https://apis.data.go.kr/B500001/qltWtrSvc/MonPurification?serviceKey=${process.env.NEXT_PUBLIC_WATER_QUALITY_API_KEY}&pageNo=1&viewType=json&year=2025&month=01&BSI=한국수자원공사`;
+        apiUrl = `https://apis.data.go.kr/B500001/qltWtrSvc/MonPurification?serviceKey=${process.env.NEXT_PUBLIC_WATER_QUALITY_API_KEY}&pageNo=1&viewType=json&year=${year}&month=${month}&BSI=한국수자원공사`;
     } else {
         const bsi = fclt_addr.split(' ')[0];
         const sigun = '';
         apiUrl = `https://apis.data.go.kr/B500001/qltWtrSvc/MonPurification?serviceKey=${
             process.env.NEXT_PUBLIC_WATER_QUALITY_API_KEY
-        }&pageNo=1&viewType=json&year=2025&month=01&BSI=${encodeURIComponent(bsi)}&SIGUN=${sigun}`;
+        }&pageNo=1&viewType=json&year=${year}&month=${month}&BSI=${encodeURIComponent(bsi)}&SIGUN=${sigun}`;
     }
 
     try {
-        const response = await axios.get(apiUrl);
+        const response = await axios.get(apiUrl, { timeout: 3000 });
+        // const response = await axios.get(apiUrl);
         const items = response.data.response.body.items;
 
         if (!items || !Array.isArray(items)) {

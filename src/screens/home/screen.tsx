@@ -1,73 +1,115 @@
 'use client';
+import { useEffect, useRef, useState } from 'react';
 import { Layout } from '@/src/widgets/layout';
-import { Droplet, Coffee, Droplets, AlertTriangle } from 'lucide-react';
+import { Droplet, Droplets, AlertTriangle, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { SearchContainer } from '@/src/widgets/search-container';
 import { Header } from '@/src/widgets/header';
-import { useQuery } from '@tanstack/react-query';
 import { estimateSOCL } from '@/src/features/water-quality/lib/estimate-SO-CL';
-import { WaterQualityData } from '@/src/features/water-quality/types';
-import { Address } from '@/src/features/address-search/types';
-
-// 수질 상태 평가 함수
-const getQualityStatus = (value: number | undefined, min?: number, max?: number) => {
-    let status = '확인 필요';
-    let bgColor = 'bg-gray-100';
-    let color = 'text-gray-800';
-    let forCoffee = '정보가 부족합니다';
-
-    if (value !== undefined && value !== null) {
-        if (min !== undefined && max !== undefined) {
-            if (value >= min && value <= max) {
-                status = '적정';
-                bgColor = 'bg-green-100';
-                color = 'text-green-800';
-                forCoffee = '적합한 수준입니다';
-            } else {
-                status = '부적정';
-                bgColor = 'bg-red-100';
-                color = 'text-red-800';
-                forCoffee = '부적합한 수준입니다';
-            }
-        } else if (value > 0) {
-            status = '적정';
-            bgColor = 'bg-green-100';
-            color = 'text-green-800';
-            forCoffee = '적합한 수준입니다';
-        } else {
-            status = '부적정';
-            bgColor = 'bg-red-100';
-            color = 'text-red-800';
-            forCoffee = '부적합한 수준입니다';
-        }
-    }
-
-    return {
-        status,
-        bgColor,
-        color,
-        forCoffee,
-    };
-};
+import { evaluateWaterQualityStatus, formatMonth, formatYear, getNextMonth } from '@/src/features/water-quality/utils';
+import { WaterQualityCard } from '@/src/features/water-quality/ui';
+import { getPreviousMonth } from '@/src/features/water-quality/utils';
+import { ContactUs } from '@/src/widgets/contact-us';
+import { Disclaimer } from '@/src/widgets/disclaimer';
+import { useQuery } from '@tanstack/react-query';
+import { fetchWaterQualityData } from '@/src/features/water-quality/api';
 
 export const HomeScreen = () => {
-    // 캐시된 결과 데이터 조회 - 쿼리 키 추가
-    const { data: cachedResult, isLoading } = useQuery<{ data: WaterQualityData; address?: Address }>({
-        queryKey: ['waterQualityResult'], // 쿼리 키 추가
-        queryFn: () => Promise.resolve({ data: {} as WaterQualityData }),
-        enabled: false,
-        staleTime: Infinity,
-    });
-    if (cachedResult) {
-        console.log('from home screen', cachedResult);
-    }
+    const today = new Date();
+    const [year, setYear] = useState(today.getFullYear());
+    const [month, setMonth] = useState(today.getMonth());
 
-    // 로딩 처리
+    const [selectedId, setSelectedId] = useState<string | undefined>();
+    const retryCountRef = useRef(0);
+    const latestDateRef = useRef<string | null>(null);
+
+    const isInitial = useRef(true);
+
+    const {
+        data: waterQuality,
+        isLoading,
+        isError,
+        isSuccess,
+    } = useQuery({
+        queryKey: ['waterQuality', selectedId, formatYear(year), formatMonth(month)],
+        queryFn: () => fetchWaterQualityData({ id: selectedId, year: formatYear(year), month: formatMonth(month) }),
+        enabled: !!selectedId,
+        retry: 2,
+    });
+
+    useEffect(() => {
+        if (isError) {
+            if (selectedId && isInitial.current) {
+                const MAX_RETRIES = 2;
+                let searchYear = year;
+                let searchMonth = month;
+
+                const tryPreviousMonths = () => {
+                    if (retryCountRef.current < MAX_RETRIES) {
+                        const prevDate = getPreviousMonth(searchYear, searchMonth);
+                        searchYear = prevDate.year;
+                        searchMonth = prevDate.month;
+
+                        retryCountRef.current++;
+
+                        setYear(searchYear);
+                        setMonth(searchMonth);
+
+                        console.log(
+                            `${retryCountRef.current}번째 시도: ${searchYear}년 ${searchMonth}월로 이동합니다.`
+                        );
+                    } else {
+                        console.log(`최대 시도 횟수(${MAX_RETRIES})에 도달했습니다.`);
+                    }
+                };
+
+                tryPreviousMonths();
+            } else {
+                console.log('isError', isError);
+            }
+        }
+    }, [isError, selectedId, year, month]);
+
+    const handlePrevMonth = () => {
+        const prevDate = getPreviousMonth(year, month);
+        setYear(prevDate.year);
+        setMonth(prevDate.month);
+    };
+
+    const handleNextMonth = () => {
+        const nextDate = getNextMonth(year, month);
+        setYear(nextDate.year);
+        setMonth(nextDate.month);
+    };
+
+    useEffect(() => {
+        if (isSuccess && waterQuality) {
+            if (isInitial.current) {
+                // console.log(waterQuality);
+                latestDateRef.current = `${year}-${month}`;
+                isInitial.current = false;
+            } else {
+                console.log(waterQuality);
+            }
+        }
+    }, [isSuccess, waterQuality]);
+
+    // 선택된 ID가 변경될 때 현재 년월로 초기화
+    useEffect(() => {
+        if (selectedId) {
+            setYear(today.getFullYear());
+            setMonth(today.getMonth());
+            retryCountRef.current = 0;
+            latestDateRef.current = null;
+            isInitial.current = true;
+        }
+    }, [selectedId]);
+
     if (isLoading) {
         return (
             <Layout>
                 <Header />
                 <div className="flex items-center justify-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
                 </div>
             </Layout>
         );
@@ -76,7 +118,7 @@ export const HomeScreen = () => {
     return (
         <Layout>
             <Header />
-            <SearchContainer />
+            <SearchContainer setSelectedId={setSelectedId} />
 
             <div className="px-4 pb-4 flex-1">
                 {/* 수질 정보 카드 */}
@@ -84,20 +126,53 @@ export const HomeScreen = () => {
                     <div className="flex justify-between items-center mb-3">
                         <div>
                             <h2 className="text-lg font-bold text-gray-800">수질 정보</h2>
-                            <p className="text-xs text-gray-500">
-                                {cachedResult?.data?.UPDATE_DAT
-                                    ? `최종 업데이트: ${cachedResult.data.UPDATE_DAT}`
-                                    : '데이터를 불러오세요'}
-                            </p>
                         </div>
-                        {cachedResult?.data?.FCLT_NAM && (
+                        {waterQuality?.FCLT_NAM && (
                             <div className="bg-blue-50 text-blue-700 py-1 px-2 rounded-full text-xs font-medium">
-                                {cachedResult.data.FCLT_NAM}
+                                {waterQuality.FCLT_NAM}
                             </div>
                         )}
                     </div>
+                    {waterQuality?.UPDATE_DAT && (
+                        <div>
+                            <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2 mb-4">
+                                <button
+                                    className={`p-2 rounded-full ${
+                                        true ? 'text-blue-600 hover:bg-blue-100' : 'text-gray-400 cursor-not-allowed'
+                                    }`}
+                                >
+                                    <ChevronLeft
+                                        size={20}
+                                        onClick={() => {
+                                            handlePrevMonth();
+                                        }}
+                                    />
+                                </button>
 
-                    {!cachedResult?.data?.HR ? (
+                                <div className="flex items-center text-sm font-medium text-gray-700">
+                                    <Calendar size={16} className="mr-1 text-blue-600" />
+                                    {year}년 {month}월
+                                </div>
+
+                                <button
+                                    className={`p-2 rounded-full ${
+                                        latestDateRef.current !== `${year}-${month}`
+                                            ? 'text-blue-600 hover:bg-blue-100'
+                                            : 'text-gray-400 cursor-not-allowed'
+                                    }`}
+                                    disabled={latestDateRef.current === `${year}-${month}`}
+                                >
+                                    <ChevronRight
+                                        size={20}
+                                        onClick={
+                                            latestDateRef.current !== `${year}-${month}` ? handleNextMonth : undefined
+                                        }
+                                    />
+                                </button>
+                            </div>
+                        </div>
+                    )}
+                    {!waterQuality?.HR ? (
                         <div className="bg-gray-50 p-4 rounded-lg text-center">
                             <p className="text-gray-500">주소를 검색하고 수질 데이터를 조회해 보세요.</p>
                         </div>
@@ -108,10 +183,10 @@ export const HomeScreen = () => {
                                 <WaterQualityCard
                                     icon={<Droplet size={16} className="text-blue-500 mr-1" />}
                                     title="경도 (Hardness)"
-                                    value={cachedResult?.data?.HR}
+                                    value={waterQuality?.HR}
                                     unit="mg/L"
-                                    statusInfo={getQualityStatus(
-                                        cachedResult?.data?.HR ? Number(cachedResult.data.HR) : undefined,
+                                    statusInfo={evaluateWaterQualityStatus(
+                                        waterQuality?.HR ? Number(waterQuality.HR) : undefined,
                                         17,
                                         85
                                     )}
@@ -123,10 +198,10 @@ export const HomeScreen = () => {
                                 <WaterQualityCard
                                     icon={<Droplet size={16} className="text-purple-500 mr-1" />}
                                     title="pH (수소이온농도)"
-                                    value={cachedResult?.data?.PH}
+                                    value={waterQuality?.PH}
                                     unit=""
-                                    statusInfo={getQualityStatus(
-                                        cachedResult?.data?.PH ? Number(cachedResult.data.PH) : undefined,
+                                    statusInfo={evaluateWaterQualityStatus(
+                                        waterQuality?.PH ? Number(waterQuality.PH) : undefined,
                                         6.5,
                                         7.5
                                     )}
@@ -138,10 +213,10 @@ export const HomeScreen = () => {
                                 <WaterQualityCard
                                     icon={<Droplet size={16} className="text-green-500 mr-1" />}
                                     title="TDS (증발잔류물)"
-                                    value={cachedResult?.data?.TDS}
+                                    value={waterQuality?.TDS}
                                     unit="mg/L"
-                                    statusInfo={getQualityStatus(
-                                        cachedResult?.data?.TDS ? Number(cachedResult.data.TDS) : undefined,
+                                    statusInfo={evaluateWaterQualityStatus(
+                                        waterQuality?.TDS ? Number(waterQuality.TDS) : undefined,
                                         75,
                                         250
                                     )}
@@ -153,13 +228,13 @@ export const HomeScreen = () => {
                                 <WaterQualityCard
                                     icon={<Droplet size={16} className="text-red-500 mr-1" />}
                                     title="잔류 염소 (Residual Chlorine)"
-                                    value={cachedResult?.data?.RC}
+                                    value={waterQuality?.RC}
                                     unit="mg/L"
-                                    statusInfo={getQualityStatus(
-                                        cachedResult?.data?.RC
-                                            ? Number(cachedResult.data.RC) === 0
+                                    statusInfo={evaluateWaterQualityStatus(
+                                        waterQuality?.RC
+                                            ? Number(waterQuality.RC) === 0
                                                 ? 1
-                                                : Number(cachedResult.data.RC)
+                                                : Number(waterQuality.RC)
                                             : undefined,
                                         0,
                                         0
@@ -170,11 +245,11 @@ export const HomeScreen = () => {
                             </div>
 
                             {/* 미네랄 성분 */}
-                            <MineralsSection
-                                HR={cachedResult?.data?.HR}
-                                SO={cachedResult?.data?.SO}
-                                CL={cachedResult?.data?.CL}
-                            />
+                            <MineralsSection HR={waterQuality?.HR} SO={waterQuality?.SO} CL={waterQuality?.CL} />
+
+                            {/* <p className="text-xs text-right text-gray-500 ">
+                                {waterQuality?.data?.UPDATE_DAT ? `업데이트 일자: ${waterQuality.data.UPDATE_DAT}` : ''}
+                            </p> */}
 
                             {/* 카페 필터 정보 */}
                             <div className="bg-white rounded-lg shadow-sm p-4 mt-4">
@@ -182,68 +257,15 @@ export const HomeScreen = () => {
                                     <h2 className="text-lg font-bold text-gray-800">카페 필터 시스템 관리</h2>
                                 </div>
 
-                                <FilterManagementAlert HR={cachedResult?.data?.HR} />
+                                <FilterManagementAlert HR={waterQuality?.HR} />
                                 <Disclaimer />
                             </div>
                         </>
                     )}
                 </div>
+                <ContactUs />
             </div>
-            <ContactUs />
         </Layout>
-    );
-};
-
-const WaterQualityCard = ({
-    icon,
-    title,
-    value,
-    unit,
-    statusInfo,
-    scaTarget,
-    scaRange,
-}: {
-    icon: React.ReactNode;
-    title: string;
-    value: string | undefined;
-    unit: string;
-    statusInfo: {
-        status: string;
-        bgColor: string;
-        color: string;
-        forCoffee: string;
-    };
-    scaTarget: string;
-    scaRange: string;
-}) => {
-    return (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 p-3 hover:shadow-md transition-shadow">
-            <div className="flex justify-between items-center mb-2">
-                <div className="flex items-center">
-                    {icon}
-                    <span className="text-gray-700 text-sm font-medium">{title}</span>
-                </div>
-                <span
-                    className={`px-2 py-0.5 rounded-full text-xs font-medium ${statusInfo.bgColor} ${statusInfo.color}`}
-                >
-                    {statusInfo.status}
-                </span>
-            </div>
-            <div className="text-2xl font-bold text-gray-800">
-                {value || '-'} {value && unit && <span className="text-xs font-normal text-gray-500">{unit}</span>}
-            </div>
-            <div className="mt-1 flex items-center justify-between">
-                <div className="flex items-center">
-                    <Coffee size={12} className="text-gray-600 mr-1" />
-                    <span className="text-xs text-gray-600">{statusInfo.forCoffee}</span>
-                </div>
-                <div>
-                    <span className="text-xs text-gray-500 font-medium">
-                        SCA 기준: {scaTarget} ({scaRange})
-                    </span>
-                </div>
-            </div>
-        </div>
     );
 };
 
@@ -320,28 +342,6 @@ export const FilterManagementAlert = ({ HR }: { HR: string | undefined }) => {
             <p className="text-xs text-amber-700 leading-relaxed">
                 {filterRecommendation} {roRecommendation}
             </p>
-        </div>
-    );
-};
-
-// 정보 고지사항 컴포넌트
-export const Disclaimer = () => {
-    return (
-        <div className="text-xs text-gray-500 bg-gray-50 p-3 rounded-lg">
-            <p className="mb-1">
-                * 해당 정보는 공공데이터 기반으로 제공되며, 정확한 수질 확인을 위해서는 현장 테스트를 권장합니다.
-            </p>
-            <p>* 지역별 수돗물 기준 정보이며, 건물 배관 상태에 따라 차이가 있을 수 있습니다.</p>
-        </div>
-    );
-};
-
-export const ContactUs = () => {
-    return (
-        <div className="bg-white rounded-lg shadow-sm p-4 mb-3">
-            <h2 className="text-lg font-bold text-gray-800">문의하기</h2>
-            <p className="text-sm text-gray-500">문의 사항이 있으시면 아래 연락처로 문의해주세요.</p>
-            <p>hhanheon@gmail.com</p>
         </div>
     );
 };

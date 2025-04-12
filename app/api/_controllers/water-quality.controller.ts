@@ -6,7 +6,9 @@ import { estimateSOCL } from '@/app/api/_utils';
 export async function getWaterQualityByAddressIdx(request: NextRequest) {
     try {
         const { searchParams } = new URL(request.url);
-        const idx = searchParams.get('idx');
+        const idx = searchParams.get('id');
+        const year = searchParams.get('year');
+        const month = searchParams.get('month');
 
         if (!idx) {
             return NextResponse.json({ message: 'idx가 없습니다.' }, { status: 400 });
@@ -17,7 +19,7 @@ export async function getWaterQualityByAddressIdx(request: NextRequest) {
             return NextResponse.json({ message: '주소 데이터를 찾을 수 없습니다.' }, { status: 404 });
         }
 
-        const waterQualityData = await getWaterQualityForAddress(address);
+        const waterQualityData = await getWaterQualityForAddress(address, year, month);
         if (!waterQualityData) {
             return NextResponse.json({ message: '수질 데이터를 찾을 수 없습니다.' }, { status: 404 });
         }
