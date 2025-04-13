@@ -91,6 +91,7 @@ export const HomeScreen = () => {
                 console.log(waterQuality);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSuccess, waterQuality]);
 
     // 선택된 ID가 변경될 때 현재 년월로 초기화
@@ -102,6 +103,7 @@ export const HomeScreen = () => {
             latestDateRef.current = null;
             isInitial.current = true;
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedId]);
 
     if (isLoading) {
