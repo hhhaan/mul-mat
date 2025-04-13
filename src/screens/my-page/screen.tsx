@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/src/entities/user/model/store';
 
 export const MyPageScreen = () => {
-    const { userInfo, signOut, loading } = useUserStore();
+    const { userInfo, signOut } = useUserStore();
 
     const router = useRouter();
 

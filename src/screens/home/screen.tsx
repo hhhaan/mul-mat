@@ -164,11 +164,11 @@ export const HomeScreen = () => {
                                         size={20}
                                         onClick={() => {
                                             if (latestDateRef.current !== `${year}-${month}`) {
-                                                // handleNextMonth();
+                                                handleNextMonth();
                                             }
                                         }}
                                     />
-                                </button>{' '}
+                                </button>
                             </div>
                         </div>
                     )}
