@@ -33,7 +33,7 @@ export const HomeScreen = () => {
         queryKey: ['waterQuality', selectedId, formatYear(year), formatMonth(month)],
         queryFn: () => fetchWaterQualityData({ id: selectedId, year: formatYear(year), month: formatMonth(month) }),
         enabled: !!selectedId,
-        retry: 2,
+        retry: 1,
     });
 
     useEffect(() => {
@@ -148,12 +148,10 @@ export const HomeScreen = () => {
                                         }}
                                     />
                                 </button>
-
                                 <div className="flex items-center text-sm font-medium text-gray-700">
                                     <Calendar size={16} className="mr-1 text-blue-600" />
                                     {year}년 {month}월
                                 </div>
-
                                 <button
                                     className={`p-2 rounded-full ${
                                         latestDateRef.current !== `${year}-${month}`
@@ -164,11 +162,13 @@ export const HomeScreen = () => {
                                 >
                                     <ChevronRight
                                         size={20}
-                                        onClick={
-                                            latestDateRef.current !== `${year}-${month}` ? handleNextMonth : undefined
-                                        }
+                                        onClick={() => {
+                                            if (latestDateRef.current !== `${year}-${month}`) {
+                                                // handleNextMonth();
+                                            }
+                                        }}
                                     />
-                                </button>
+                                </button>{' '}
                             </div>
                         </div>
                     )}
