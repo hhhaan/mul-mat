@@ -35,7 +35,7 @@ export const HomeScreen = () => {
         enabled: !!selectedId,
         retry: 1,
     });
-
+    // 오류 발생 시 이전 달로 이동
     useEffect(() => {
         if (isError) {
             if (selectedId && isInitial.current) {
