@@ -1,8 +1,8 @@
 import type { NextConfig } from 'next';
 import path from 'path';
+import withPWA from 'next-pwa';
 
 const nextConfig: NextConfig = {
-    /* 기존 config options */
     webpack: (config) => {
         config.resolve.alias = {
             ...config.resolve.alias,
@@ -12,4 +12,11 @@ const nextConfig: NextConfig = {
     },
 };
 
-export default nextConfig;
+const nextPwa = withPWA({
+    dest: 'public',
+    // register: true,
+    // skipWaiting: true,
+});
+
+// 최신 문법
+export default nextPwa(nextConfig as any);
