@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
-import { Layout } from '@/src/widgets/layout';
+import { Layout } from '@/src/widgets/page-layout';
 import { Droplet, Droplets, AlertTriangle, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
 import { SearchContainer } from '@/src/widgets/search-container';
 import { Header } from '@/src/widgets/header';

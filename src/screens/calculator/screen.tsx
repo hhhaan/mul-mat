@@ -3,7 +3,7 @@
 import { Coffee, Calculator, Ratio, Droplet, ArrowLeft, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { Box } from '@/src/shared/ui';
-import { Layout } from '@/src/widgets/layout';
+import { Layout } from '@/src/widgets/page-layout';
 import { useCalculator } from '@/src/features/extraction-yield-calculate/hooks/useCalculator';
 import { InputField, ResultCard, RecommendationCard } from '@/src/features/extraction-yield-calculate/components';
 

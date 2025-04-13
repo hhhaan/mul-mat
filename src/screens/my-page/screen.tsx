@@ -1,5 +1,5 @@
 'use client';
-import { Layout } from '@/src/widgets/layout';
+import { Layout } from '@/src/widgets/page-layout';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/src/entities/user/model/store';
 
