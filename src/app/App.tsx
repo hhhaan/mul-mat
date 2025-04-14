@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import { Provider } from './provider/provider';
+import Script from 'next/script';
 
 import './styles/globals.css';
 
@@ -27,6 +28,17 @@ export const App = ({ children }: { children: React.ReactNode }) => {
             </head>
             <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
                 <Provider>{children}</Provider>
+
+                {/* Google Analytics */}
+                <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-60E91B6QPQ" />
+                <Script id="google-analytics" strategy="afterInteractive">
+                    {`
+                        window.dataLayer = window.dataLayer || [];
+                        function gtag(){dataLayer.push(arguments);}
+                        gtag('js', new Date());
+                        gtag('config', 'G-60E91B6QPQ');
+                    `}
+                </Script>
             </body>
         </html>
     );
