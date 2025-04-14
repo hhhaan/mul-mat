@@ -9,8 +9,7 @@ export const KakaoLoginButton = () => {
         const { data, error } = await supabase.auth.signInWithOAuth({
             provider: 'kakao',
             options: {
-                // redirectTo: `${window.location.origin}/api/auth/callback`,
-                redirectTo: 'http://localhost:3000/api/auth/callback',
+                redirectTo: `${window.location.origin}/api/auth/callback`,
             },
         });
         console.log(data, error);
