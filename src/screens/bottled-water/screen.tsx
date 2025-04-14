@@ -1,7 +1,9 @@
+import { Layout } from '@/src/widgets/page-layout';
+
 export const BottledWaterScreen = () => {
     return (
-        <div>
+        <Layout>
             <div></div>
-        </div>
+        </Layout>
     );
 };
