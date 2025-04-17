@@ -18,7 +18,7 @@ export const MyPageScreen = () => {
 
     return (
         <Layout>
-            <div className="container mx-auto px-4 py-8 max-w-2xl">
+            <div className="w-full px-4 py-4">
                 <h1 className="text-2xl font-bold text-gray-800 mb-6">마이페이지</h1>
 
                 {/* 사용자 정보 카드 */}

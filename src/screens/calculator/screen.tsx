@@ -13,7 +13,7 @@ export const EYCalculatorScreen = () => {
 
     return (
         <Layout>
-            <div className="flex flex-col bg-gray-50 w-full">
+            <div className="w-full">
                 {/* 헤더 */}
                 <div className="fixed top-0 left-0 right-0 z-10">
                     <div className="bg-white shadow-sm p-3">

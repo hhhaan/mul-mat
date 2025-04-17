@@ -17,56 +17,58 @@ export const NavBar = () => {
     const activeTab = getActiveTab(pathname);
 
     return (
-        <nav className="fixed bottom-2 left-0 right-0 bg-white border-t border-gray-200 p-2">
-            <div className="flex justify-around">
-                <button
-                    className={`flex flex-col items-center p-2 ${
-                        activeTab === 'search' ? 'text-blue-600' : 'text-gray-600'
-                    }`}
-                    onClick={() => {
-                        router.push('/');
-                    }}
-                >
-                    <Search size={20} />
-                    <span className="text-xs mt-1">검색</span>
-                </button>
+        <div className="fixed bottom-0 left-0 right-0 flex justify-center bg-transparent pointer-events-none">
+            <nav className="w-full max-w-md bg-white border-t border-gray-200 px-2 pt-2 py-4 pointer-events-auto">
+                <div className="flex justify-around">
+                    <button
+                        className={`flex flex-col items-center p-2 ${
+                            activeTab === 'search' ? 'text-blue-600' : 'text-gray-600'
+                        }`}
+                        onClick={() => {
+                            router.push('/');
+                        }}
+                    >
+                        <Search size={20} />
+                        <span className="text-xs mt-1">검색</span>
+                    </button>
 
-                <button
-                    className={`flex flex-col items-center p-2 ${
-                        activeTab === 'calculator' ? 'text-blue-600' : 'text-gray-600'
-                    }`}
-                    onClick={() => {
-                        router.push('/calculator');
-                    }}
-                >
-                    <Calculator size={20} />
-                    <span className="text-xs mt-1">수율 측정기</span>
-                </button>
+                    <button
+                        className={`flex flex-col items-center p-2 ${
+                            activeTab === 'calculator' ? 'text-blue-600' : 'text-gray-600'
+                        }`}
+                        onClick={() => {
+                            router.push('/calculator');
+                        }}
+                    >
+                        <Calculator size={20} />
+                        <span className="text-xs mt-1">수율 측정기</span>
+                    </button>
 
-                <button
-                    className={`flex flex-col items-center p-2 ${
-                        activeTab === 'quality' ? 'text-blue-600' : 'text-gray-600'
-                    }`}
-                    onClick={() => {
-                        router.push('/bottled-water');
-                    }}
-                >
-                    <Droplets size={20} />
-                    <span className="text-xs mt-1">수질정보</span>
-                </button>
+                    <button
+                        className={`flex flex-col items-center p-2 ${
+                            activeTab === 'quality' ? 'text-blue-600' : 'text-gray-600'
+                        }`}
+                        onClick={() => {
+                            router.push('/bottled-water');
+                        }}
+                    >
+                        <Droplets size={20} />
+                        <span className="text-xs mt-1">수질정보</span>
+                    </button>
 
-                <button
-                    className={`flex flex-col items-center p-2 ${
-                        activeTab === 'cafe' ? 'text-blue-600' : 'text-gray-600'
-                    }`}
-                    onClick={() => {
-                        router.push('/my-page');
-                    }}
-                >
-                    <Coffee size={20} />
-                    <span className="text-xs mt-1">마이페이지</span>
-                </button>
-            </div>
-        </nav>
+                    <button
+                        className={`flex flex-col items-center p-2 ${
+                            activeTab === 'cafe' ? 'text-blue-600' : 'text-gray-600'
+                        }`}
+                        onClick={() => {
+                            router.push('/my-page');
+                        }}
+                    >
+                        <Coffee size={20} />
+                        <span className="text-xs mt-1">마이페이지</span>
+                    </button>
+                </div>
+            </nav>
+        </div>
     );
 };

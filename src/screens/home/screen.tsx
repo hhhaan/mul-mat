@@ -63,6 +63,8 @@ export const HomeScreen = () => {
                 };
 
                 tryPreviousMonths();
+            } else if (selectedId && isInitial.current == false) {
+                alert('죄송해요. 해당 지역의 데이터가 없어요');
             } else {
                 console.log('isError', isError);
             }
@@ -77,6 +79,7 @@ export const HomeScreen = () => {
 
     const handleNextMonth = () => {
         const nextDate = getNextMonth(year, month);
+        console.log('clicked');
         setYear(nextDate.year);
         setMonth(nextDate.month);
     };
@@ -155,22 +158,21 @@ export const HomeScreen = () => {
                                     {year}년 {month}월
                                 </div>
                                 <button
-                                    className={`p-2 rounded-full ${
+                                    className={`p-2 rounded-full transition-colors duration-200 ${
                                         latestDateRef.current !== `${year}-${month}`
-                                            ? 'text-blue-600 hover:bg-blue-100'
-                                            : 'text-gray-400 cursor-not-allowed'
+                                            ? 'text-blue-600 hover:bg-blue-100 active:bg-blue-200'
+                                            : 'text-gray-400 bg-gray-100 cursor-not-allowed'
                                     }`}
                                     disabled={latestDateRef.current === `${year}-${month}`}
+                                    onClick={() => {
+                                        if (latestDateRef.current !== `${year}-${month}`) {
+                                            handleNextMonth();
+                                        }
+                                    }}
+                                    aria-label="다음 달"
                                 >
-                                    <ChevronRight
-                                        size={20}
-                                        onClick={() => {
-                                            if (latestDateRef.current !== `${year}-${month}`) {
-                                                handleNextMonth();
-                                            }
-                                        }}
-                                    />
-                                </button>
+                                    <ChevronRight size={20} />
+                                </button>{' '}
                             </div>
                         </div>
                     )}
