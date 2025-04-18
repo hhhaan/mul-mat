@@ -137,17 +137,22 @@ export const EYCalculatorScreen = () => {
                                     <div className="mb-3 text-sm text-gray-600">{result.description}</div>
 
                                     {/* 프로그레스 바 */}
+                                    {/* 프로그레스 바 */}
                                     <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-3">
                                         <div
                                             className="h-full rounded-full bg-blue-500"
-                                            style={{ width: '65%' }}
+                                            style={{
+                                                width: `${Math.min(
+                                                    100,
+                                                    Math.max(0, ((parseFloat(result.yield) - 18) / (22 - 18)) * 100)
+                                                )}%`,
+                                            }}
                                             role="progressbar"
-                                            aria-valuenow={65}
-                                            aria-valuemin={0}
-                                            aria-valuemax={100}
+                                            aria-valuenow={parseFloat(result.yield)}
+                                            aria-valuemin={18}
+                                            aria-valuemax={22}
                                         ></div>
                                     </div>
-
                                     <div className="flex justify-between text-xs text-gray-400 mb-1">
                                         <span>18%</span>
                                         <span>20%</span>
