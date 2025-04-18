@@ -31,7 +31,7 @@ export const SearchContainer = ({ setSelectedId }: { setSelectedId: (id: string)
                     <div className="flex-1 relative">
                         <div
                             className={`flex border ${
-                                isSearchFocused ? 'border-blue-500 ring-1 ring-blue-100' : 'border-gray-300'
+                                isSearchFocused ? 'border-sky-400 ring-1 ring-sky-100' : 'border-gray-300'
                             } rounded-lg overflow-hidden transition-all duration-200`}
                         >
                             <SearchInput

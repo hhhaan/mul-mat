@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import { Layout } from '@/src/widgets/page-layout';
-import { Droplet, Droplets, AlertTriangle, ChevronLeft, ChevronRight, Calendar } from 'lucide-react';
+import { Droplet, Droplets, AlertTriangle, ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
 import { SearchContainer } from '@/src/widgets/search-container';
 import { Header } from '@/src/widgets/header';
 import { estimateSOCL } from '@/src/features/water-quality/lib/estimate-SO-CL';
@@ -114,7 +114,7 @@ export const HomeScreen = () => {
             <Layout>
                 <Header />
                 <div className="flex items-center justify-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-400"></div>
                 </div>
             </Layout>
         );
@@ -133,14 +133,15 @@ export const HomeScreen = () => {
                             <h2 className="text-lg font-bold text-gray-800">수질 정보</h2>
                         </div>
                         {waterQuality?.FCLT_NAM && (
-                            <div className="bg-blue-50 text-blue-700 py-1 px-2 rounded-full text-xs font-medium">
+                            <div className="bg-blue-100 text-blue-700 py-1 px-3 rounded-full text-xs font-medium flex items-center">
+                                <MapPin size={12} className="mr-1" />
                                 {waterQuality.FCLT_NAM}
                             </div>
                         )}
                     </div>
                     {waterQuality?.UPDATE_DAT && (
                         <div>
-                            <div className="flex items-center justify-between bg-gray-50 rounded-lg p-2 mb-4">
+                            <div className="flex items-center justify-between bg-blue-50 rounded-lg p-2 mb-4">
                                 <button
                                     className={`p-2 rounded-full ${
                                         true ? 'text-blue-600 hover:bg-blue-100' : 'text-gray-400 cursor-not-allowed'
