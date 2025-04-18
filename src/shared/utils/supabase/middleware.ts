@@ -38,7 +38,7 @@ export async function updateSession(request: NextRequest) {
     } = await supabase.auth.getUser();
 
     // 공개 페이지 목록
-    const publicPages = ['/login', '/auth'];
+    const publicPages = ['/login', '/auth', '/api/auth/callback'];
     const isPublicPage = publicPages.some(
         (page) => request.nextUrl.pathname === page || request.nextUrl.pathname.startsWith(page + '/')
     );
