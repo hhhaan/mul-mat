@@ -2,7 +2,7 @@ import { Droplets } from 'lucide-react';
 
 export const Header = () => {
     return (
-        <header className="relative bg-gradient-to-br from-blue-500 to-cyan-400 p-5  overflow-hidden shadow-md rounded-b-lg">
+        <header className="relative bg-gradient-to-br from-blue-500 to-cyan-400 p-5  overflow-hidden shadow-md">
             {/* 배경 장식용 SVG */}
             <div className="absolute inset-0 opacity-20 pointer-events-none">
                 <svg viewBox="0 0 100 100" preserveAspectRatio="none" className="w-full h-full">
