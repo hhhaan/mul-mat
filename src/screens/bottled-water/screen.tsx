@@ -369,7 +369,7 @@ const WaterQualityApp = () => {
             id: 2,
             name: '평창수',
             source: '강원도 평창군',
-            description2: '커피의 단맛을 원한다면.',
+            description2: '커피의 단맛을 원한다면',
             pH: '7.8', // Example value, source might provide a range
             hardness: '19.5~78', // Moderately hard range
             calcium: '5.8~9.3',
