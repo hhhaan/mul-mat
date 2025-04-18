@@ -22,7 +22,7 @@ export const NavBar = () => {
                 <div className="flex justify-around">
                     <button
                         className={`flex flex-col items-center p-2 ${
-                            activeTab === 'search' ? 'text-blue-600' : 'text-gray-600'
+                            activeTab === 'search' ? 'text-sky-500' : 'text-gray-600'
                         }`}
                         onClick={() => {
                             router.push('/');
@@ -34,7 +34,7 @@ export const NavBar = () => {
 
                     <button
                         className={`flex flex-col items-center p-2 ${
-                            activeTab === 'calculator' ? 'text-blue-600' : 'text-gray-600'
+                            activeTab === 'calculator' ? 'text-sky-500' : 'text-gray-600'
                         }`}
                         onClick={() => {
                             router.push('/calculator');
@@ -46,7 +46,7 @@ export const NavBar = () => {
 
                     <button
                         className={`flex flex-col items-center p-2 ${
-                            activeTab === 'quality' ? 'text-blue-600' : 'text-gray-600'
+                            activeTab === 'quality' ? 'text-sky-500' : 'text-gray-600'
                         }`}
                         onClick={() => {
                             router.push('/bottled-water');
@@ -58,7 +58,7 @@ export const NavBar = () => {
 
                     <button
                         className={`flex flex-col items-center p-2 ${
-                            activeTab === 'cafe' ? 'text-blue-600' : 'text-gray-600'
+                            activeTab === 'cafe' ? 'text-sky-500' : 'text-gray-600'
                         }`}
                         onClick={() => {
                             router.push('/my-page');
