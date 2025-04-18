@@ -260,7 +260,7 @@ const MineralsRadarChart = ({ water }: MineralsRadarChartProps) => {
 
     return (
         // Container with themed background color
-        <div className={`rounded-xl ${water.lightBg} p-4 mx-4 mb-4 relative`}>
+        <div className={`rounded-xl ${water.lightBg} p-4 mx-4 mb-4 relative border ${water.borderColor}`}>
             <h3 className={`text-sm font-medium mb-3 ${water.textColor}`}>미네랄 프로필</h3>
             {/* Grid layout for mineral indicators */}
             <div className="grid grid-cols-2 gap-3 relative">
