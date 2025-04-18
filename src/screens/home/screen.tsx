@@ -4,7 +4,6 @@ import { Layout } from '@/src/widgets/page-layout';
 import { Droplet, Droplets, AlertTriangle, ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
 import { SearchContainer } from '@/src/widgets/search-container';
 import { Header } from '@/src/widgets/header';
-import { estimateSOCL } from '@/src/features/water-quality/lib/estimate-SO-CL';
 import { evaluateWaterQualityStatus, formatMonth, formatYear, getNextMonth } from '@/src/features/water-quality/utils';
 import { WaterQualityCard } from '@/src/features/water-quality/ui';
 import { getPreviousMonth } from '@/src/features/water-quality/utils';
@@ -133,48 +132,46 @@ export const HomeScreen = () => {
                             <h2 className="text-lg font-bold text-gray-800">수질 정보</h2>
                         </div>
                         {waterQuality?.FCLT_NAM && (
-                            <div className="bg-blue-100 text-blue-700 py-1 px-3 rounded-full text-xs font-medium flex items-center">
+                            <div className="bg-sky-50 text-sky-600 py-1 px-3 rounded-full text-xs font-medium flex items-center">
                                 <MapPin size={12} className="mr-1" />
-                                {waterQuality.FCLT_NAM}
+                                {waterQuality.FCLT_NAM} 정수장
                             </div>
                         )}
                     </div>
                     {waterQuality?.UPDATE_DAT && (
-                        <div>
-                            <div className="flex items-center justify-between bg-blue-50 rounded-lg p-2 mb-4">
-                                <button
-                                    className={`p-2 rounded-full ${
-                                        true ? 'text-blue-600 hover:bg-blue-100' : 'text-gray-400 cursor-not-allowed'
-                                    }`}
-                                >
-                                    <ChevronLeft
-                                        size={20}
-                                        onClick={() => {
-                                            handlePrevMonth();
-                                        }}
-                                    />
-                                </button>
-                                <div className="flex items-center text-sm font-medium text-gray-700">
-                                    <Calendar size={16} className="mr-1 text-blue-600" />
-                                    {year}년 {month}월
-                                </div>
-                                <button
-                                    className={`p-2 rounded-full transition-colors duration-200 ${
-                                        latestDateRef.current !== `${year}-${month}`
-                                            ? 'text-blue-600 hover:bg-blue-100 active:bg-blue-200'
-                                            : 'text-gray-400 bg-gray-100 cursor-not-allowed'
-                                    }`}
-                                    disabled={latestDateRef.current === `${year}-${month}`}
+                        <div className="flex items-center justify-between bg-sky-50 rounded-lg p-2 mb-4">
+                            <button
+                                className={`p-2 rounded-full ${
+                                    true ? 'text-sky-600 hover:bg-sky-100' : 'text-gray-400 cursor-not-allowed'
+                                }`}
+                            >
+                                <ChevronLeft
+                                    size={20}
                                     onClick={() => {
-                                        if (latestDateRef.current !== `${year}-${month}`) {
-                                            handleNextMonth();
-                                        }
+                                        handlePrevMonth();
                                     }}
-                                    aria-label="다음 달"
-                                >
-                                    <ChevronRight size={20} />
-                                </button>{' '}
+                                />
+                            </button>
+                            <div className="flex items-center text-sm font-medium text-gray-700">
+                                <Calendar size={16} className="mr-1 text-sky-600" />
+                                {year}년 {month}월
                             </div>
+                            <button
+                                className={`p-2 rounded-full transition-colors duration-200 ${
+                                    latestDateRef.current !== `${year}-${month}`
+                                        ? 'text-sky-600 hover:bg-sky-100 active:bg-sky-200'
+                                        : 'text-gray-400 bg-gray-100 cursor-not-allowed'
+                                }`}
+                                disabled={latestDateRef.current === `${year}-${month}`}
+                                onClick={() => {
+                                    if (latestDateRef.current !== `${year}-${month}`) {
+                                        handleNextMonth();
+                                    }
+                                }}
+                                aria-label="다음 달"
+                            >
+                                <ChevronRight size={20} />
+                            </button>
                         </div>
                     )}
                     {!waterQuality?.HR ? (
@@ -248,13 +245,34 @@ export const HomeScreen = () => {
                                     scaRange="0 mg/L"
                                 />
                             </div>
+                            {/* 미네랄 성분 분석 */}
+                            <div className="bg-sky-50 rounded-xl p-4 mb-4 shadow-sm">
+                                <div className="flex justify-between items-center mb-4">
+                                    <h4 className="font-medium text-sm text-sky-500 flex items-center">
+                                        <Droplets size={18} className="mr-2 text-sky-500" />
+                                        미네랄 성분 분석
+                                    </h4>
+                                </div>
 
-                            {/* 미네랄 성분 */}
-                            <MineralsSection HR={waterQuality?.HR} SO={waterQuality?.SO} CL={waterQuality?.CL} />
-
-                            {/* <p className="text-xs text-right text-gray-500 ">
-                                {waterQuality?.data?.UPDATE_DAT ? `업데이트 일자: ${waterQuality.data.UPDATE_DAT}` : ''}
-                            </p> */}
+                                <div className="grid grid-cols-2 gap-3">
+                                    <MineralCard title="칼슘(추정)" value="28.5" description="바디감과 단맛에 영향" />
+                                    <MineralCard
+                                        title="마그네슘(추정)"
+                                        value="16.5"
+                                        description="산미와 추출 효율에 영향"
+                                    />
+                                    <MineralCard
+                                        title="황산염"
+                                        value={waterQuality.SO}
+                                        description="쓴맛 완화, 밸런스"
+                                    />
+                                    <MineralCard
+                                        title="염소이온"
+                                        value={waterQuality.CL}
+                                        description="부식 가능성, 쓴맛 강조"
+                                    />
+                                </div>
+                            </div>
 
                             {/* 카페 필터 정보 */}
                             <div className="bg-white rounded-lg shadow-sm p-4 mt-4">
@@ -271,60 +289,6 @@ export const HomeScreen = () => {
                 <ContactUs />
             </div>
         </Layout>
-    );
-};
-
-const MineralCard = ({
-    title,
-    value,
-    description,
-}: {
-    title: string;
-    value: string | undefined;
-    description: string;
-}) => {
-    return (
-        <div className="bg-white/70 rounded-lg p-3 shadow-sm">
-            <div className="text-xs text-indigo-700 font-medium mb-1">{title}</div>
-            <div className="text-lg font-bold text-gray-800">
-                {value || '-'} <span className="text-xs font-normal text-gray-500">mg/L</span>
-            </div>
-            <div className="text-xs text-gray-600 mt-1">{description}</div>
-        </div>
-    );
-};
-
-const MineralsSection = ({
-    HR,
-    SO,
-    CL,
-}: {
-    HR: string | undefined;
-    SO: string | undefined;
-    CL: string | undefined;
-}) => {
-    const { estimatedCalcium, estimatedMagnesium } = estimateSOCL(HR ? Number(HR) : 0);
-
-    return (
-        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-3 mb-4">
-            <div className="flex justify-between items-center">
-                <h4 className="font-medium text-sm text-indigo-700 flex items-center">
-                    <Droplets size={16} className="mr-1" />
-                    미네랄 성분 분석
-                </h4>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-3">
-                <MineralCard title="칼슘(추정)" value={`${estimatedCalcium}`} description="바디감과 단맛에 영향" />
-                <MineralCard
-                    title="마그네슘(추정)"
-                    value={`${estimatedMagnesium}`}
-                    description="산미와 추출 효율에 영향"
-                />
-                <MineralCard title="황산염" value={SO} description="쓴맛 완화, 밸런스" />
-                <MineralCard title="염소이온" value={CL} description="부식 가능성, 쓴맛 강조" />
-            </div>
-        </div>
     );
 };
 
@@ -347,6 +311,27 @@ export const FilterManagementAlert = ({ HR }: { HR: string | undefined }) => {
             <p className="text-xs text-amber-700 leading-relaxed">
                 {filterRecommendation} {roRecommendation}
             </p>
+        </div>
+    );
+};
+
+// 미네랄 카드 컴포넌트
+const MineralCard = ({
+    title,
+    value,
+    description,
+}: {
+    title: string;
+    value: string | undefined;
+    description: string;
+}) => {
+    return (
+        <div className="bg-white rounded-lg p-3 shadow-sm">
+            <div className="text-xs text-sky-600 font-medium mb-1">{title}</div>
+            <div className="text-lg font-bold text-gray-800">
+                {value || '-'} <span className="text-xs font-normal text-gray-500">mg/L</span>
+            </div>
+            <div className="text-xs text-gray-600 mt-1">{description}</div>
         </div>
     );
 };
