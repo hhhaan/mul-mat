@@ -48,7 +48,7 @@ export const EYCalculatorScreen = () => {
                         {/* 원두 투입량 */}
                         <div className="p-4 border-b border-gray-100">
                             <div className="flex items-center mb-2">
-                                <Coffee size={16} className="text-blue-600 mr-2" />
+                                <Coffee size={16} className="text-sky-600 mr-2" />
                                 <label className="text-gray-700 font-medium">원두 투입량</label>
                             </div>
                             <div className="flex items-center">
@@ -57,7 +57,7 @@ export const EYCalculatorScreen = () => {
                                     name="coffeeWeight"
                                     value={inputValues.coffeeWeight}
                                     onChange={handleInputChange}
-                                    className="w-full p-3 bg-blue-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                                    className="w-full p-3 bg-blue-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-gray-700"
                                     placeholder="원두 무게를 입력하세요"
                                 />
                                 <span className="text-sm text-gray-500 ml-2 min-w-8">g</span>
@@ -66,7 +66,7 @@ export const EYCalculatorScreen = () => {
                         {/* 물의 양 */}
                         <div className="p-4 border-b border-gray-100">
                             <div className="flex items-center mb-2">
-                                <Droplet size={16} className="text-blue-500 mr-2" />
+                                <Droplet size={16} className="text-sky-500 mr-2" />
                                 <label className="text-gray-700 font-medium">사용한 물의 양</label>
                             </div>
                             <div className="flex items-center">
@@ -75,7 +75,7 @@ export const EYCalculatorScreen = () => {
                                     name="waterAmount"
                                     value={inputValues.waterAmount}
                                     onChange={handleInputChange}
-                                    className="w-full p-3 bg-blue-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                                    className="w-full p-3 bg-sky-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-gray-700"
                                     placeholder="사용한 물의 양을 입력하세요"
                                 />
                                 <span className="text-sm text-gray-500 ml-2 min-w-8">ml</span>
@@ -92,7 +92,7 @@ export const EYCalculatorScreen = () => {
                                     type="number"
                                     name="tdsValue"
                                     value={inputValues.tdsValue}
-                                    className="w-full p-3 bg-blue-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-gray-700"
+                                    className="w-full p-3 bg-sky-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-gray-700"
                                     placeholder="TDS 값을 입력하세요 (예: 1.35)"
                                     onChange={handleInputChange}
                                 />
@@ -115,7 +115,7 @@ export const EYCalculatorScreen = () => {
                     <>
                         <div className="px-4 mb-4">
                             <h3 className="text-lg font-semibold text-gray-800 mb-3 flex items-center">
-                                <Activity size={20} className="text-blue-600 mr-2" />
+                                <Activity size={20} className="text-sky-600 mr-2" />
                                 계산 결과
                             </h3>
                             <div className="bg-white rounded-xl shadow-sm p-5 relative overflow-hidden">
@@ -182,8 +182,8 @@ export const EYCalculatorScreen = () => {
 
                 {/* 도움말 섹션 */}
                 <div className="px-4 mb-6">
-                    <div className="bg-white p-4 rounded-xl border border-blue-100">
-                        <h3 className="text-sm font-medium mb-3 flex items-center text-blue-700">
+                    <div className="bg-white p-4 rounded-xl border border-sky-100">
+                        <h3 className="text-sm font-medium mb-3 flex items-center text-sky-700">
                             <Info size={16} className="mr-1.5" />
                             도움말
                         </h3>
