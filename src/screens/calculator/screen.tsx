@@ -121,7 +121,7 @@ export const EYCalculatorScreen = () => {
                             <div className="bg-white rounded-xl shadow-sm p-5 relative overflow-hidden">
                                 <div className="absolute right-0 top-0 h-full w-1/3 bg-gradient-to-l from-blue-50 to-transparent opacity-70"></div>
 
-                                <div className="relative z-10">
+                                <div className="relative ">
                                     <div className="flex justify-between items-center mb-3">
                                         <h4 className="text-gray-700 font-medium">수율 (Extraction Yield)</h4>
                                         <span className="px-3 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
