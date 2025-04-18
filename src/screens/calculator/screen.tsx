@@ -4,15 +4,21 @@ import { Coffee, Ratio, Droplet, ChevronLeft, ChevronRight, Activity, Info } fro
 import { Layout } from '@/src/widgets/page-layout';
 import { useCalculator } from '@/src/features/extraction-yield-calculate/hooks/useCalculator';
 
+import { useRouter } from 'next/navigation';
+
 export const EYCalculatorScreen = () => {
     const { inputValues, result, calculated, handleInputChange, calculate } = useCalculator();
-
+    const router = useRouter();
     return (
         <Layout>
             <div className="w-full bg-blue-50">
                 <div className="bg-white px-4 py-3 border-b border-gray-100 flex items-center justify-between sticky top-0 z-10">
                     <div className="flex items-center">
-                        <button className="mr-2 text-gray-500 hover:text-gray-700" aria-label="뒤로 가기">
+                        <button
+                            className="mr-2 text-gray-500 hover:text-gray-700"
+                            onClick={() => router.replace('/')}
+                            aria-label="뒤로 가기"
+                        >
                             <ChevronLeft size={20} />
                         </button>
                         <h1 className="text-lg font-semibold text-gray-800">커피 수율 계산기</h1>

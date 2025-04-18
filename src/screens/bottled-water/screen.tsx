@@ -2,6 +2,7 @@
 
 import { useState, useEffect, ReactNode, Dispatch, SetStateAction } from 'react';
 import { Droplet, TrendingUp, Info, ChevronLeft, Activity } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 import { Layout } from '@/src/widgets/page-layout';
 
@@ -113,14 +114,19 @@ export const BottledWaterScreen = () => {
 
 // Header component for the app
 const AppHeader = () => {
+    const router = useRouter();
     return (
         <div className="bg-white px-4 py-3 border-b border-gray-100 flex items-center justify-between sticky top-0 z-10">
             <div className="flex items-center">
                 {/* Back button - Consider adding navigation logic */}
-                <button className="mr-2 text-gray-500 hover:text-gray-700" aria-label="뒤로 가기">
+                <button
+                    className="mr-2 text-gray-500 hover:text-gray-700"
+                    aria-label="뒤로 가기"
+                    onClick={() => router.replace('/')}
+                >
                     <ChevronLeft size={20} />
                 </button>
-                <h1 className="text-lg font-semibold text-gray-800">생수 수질 정보</h1>
+                <h1 className="text-lg font-sem ibold text-gray-800">생수 수질 정보</h1>
             </div>
         </div>
     );
