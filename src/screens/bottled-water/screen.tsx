@@ -443,19 +443,19 @@ const WaterQualityApp = () => {
 
     // Hardness classification based on common standards (mg/L as CaCO3)
     const getHardnessClass = (hardness: number): string => {
-        if (hardness < 60) return '연수 (Soft)';
-        if (hardness < 120) return '약경수 (Moderately Hard)';
-        if (hardness < 180) return '경수 (Hard)';
-        return '강경수 (Very Hard)';
+        if (hardness < 60) return '연수';
+        if (hardness < 120) return '약경수';
+        if (hardness < 180) return '경수';
+        return '강경수';
     };
 
     // pH classification
     const getPHClass = (ph: number): string => {
-        if (ph < 6.5) return '산성 (Acidic)';
-        if (ph < 7.0) return '약산성 (Slightly Acidic)';
-        if (ph <= 7.5) return '중성 (Neutral)';
-        if (ph < 8.5) return '약알칼리성 (Slightly Alkaline)';
-        return '알칼리성 (Alkaline)';
+        if (ph < 6.5) return '산성';
+        if (ph < 7.0) return '약산성';
+        if (ph <= 7.5) return '중성';
+        if (ph < 8.5) return '약알칼리성';
+        return '알칼리성';
     };
 
     return (
@@ -551,9 +551,9 @@ const WaterQualityApp = () => {
                             key={index}
                             className="bg-white/60 rounded-lg p-2 text-center text-xs flex flex-col h-full"
                         >
-                            <span className={`block font-medium ${selectedWater.textColor}`}>{tag.title}</span>
+                            <span className={`block font-medium pb-3 ${selectedWater.textColor}`}>{tag.title}</span>
                             <div className="flex items-center justify-center flex-1">
-                                <p className="font-semibold text-gray-800">{tag.value}</p>
+                                <p className="font-semibold pb-3 text-gray-800">{tag.value}</p>
                             </div>
                         </div>
                     ))}

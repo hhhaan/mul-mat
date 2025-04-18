@@ -60,7 +60,7 @@ export const EYCalculatorScreen = () => {
                                     className="w-full p-3 bg-blue-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-gray-700"
                                     placeholder="원두 무게를 입력하세요"
                                 />
-                                <span className="text-sm text-gray-500 ml-2 min-w-8">g</span>
+                                <span className="text-sm text-right text-gray-500 ml-2 min-w-3">g</span>
                             </div>
                         </div>
                         {/* 물의 양 */}
@@ -75,10 +75,10 @@ export const EYCalculatorScreen = () => {
                                     name="waterAmount"
                                     value={inputValues.waterAmount}
                                     onChange={handleInputChange}
-                                    className="w-full p-3 bg-sky-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-gray-700"
+                                    className="w-full p-3 bg-sky-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-500 text-gray-700 "
                                     placeholder="사용한 물의 양을 입력하세요"
                                 />
-                                <span className="text-sm text-gray-500 ml-2 min-w-8">ml</span>
+                                <span className="text-sm text-right text-gray-500 ml-2 min-w-3">ml</span>
                             </div>
                         </div>
                         {/* TDS 값 */}
@@ -96,7 +96,7 @@ export const EYCalculatorScreen = () => {
                                     placeholder="TDS 값을 입력하세요 (예: 1.35)"
                                     onChange={handleInputChange}
                                 />
-                                <span className="text-sm text-gray-500 ml-2 min-w-8">%</span>
+                                <span className="text-sm text-right text-gray-500 ml-2 min-w-3">%</span>
                             </div>
                         </div>
                     </div>

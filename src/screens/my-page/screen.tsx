@@ -2,6 +2,7 @@
 import { Layout } from '@/src/widgets/page-layout';
 import { useRouter } from 'next/navigation';
 import { useUserStore } from '@/src/entities/user/model/store';
+import { ChevronLeft } from 'lucide-react';
 
 export const MyPageScreen = () => {
     const { userInfo, signOut } = useUserStore();
@@ -18,32 +19,41 @@ export const MyPageScreen = () => {
 
     return (
         <Layout>
-            <div className="w-full px-4 py-4">
-                <h1 className="text-2xl font-bold text-gray-800 mb-6">마이페이지</h1>
-
-                {/* 사용자 정보 카드 */}
-                <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-6">
-                    <div className="p-6">
-                        <div className="flex items-center ">
-                            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold text-xl mr-4">
-                                {userInfo?.name[0]}
-                            </div>
-                            <div>
-                                <h2 className="text-xl font-bold text-gray-800">{userInfo?.name}</h2>
-                                <p className="text-gray-600">{userInfo?.email}</p>
-                                {/* <p className="text-sm text-gray-500">가입일: {userInfo?.createdAt}</p> */}
-                            </div>
-                        </div>
+            <div className="w-full">
+                <div className="bg-white px-4 py-3 border-b border-gray-100 flex items-center justify-between sticky top-0 z-10">
+                    <div className="flex items-center">
+                        <button className="mr-2 text-gray-500 hover:text-gray-700" aria-label="뒤로 가기">
+                            <ChevronLeft size={20} />
+                        </button>
+                        <h1 className="text-lg font-semibold text-gray-800">마이페이지</h1>
                     </div>
                 </div>
 
-                {/* 로그아웃 버튼 */}
-                <button
-                    onClick={handleLogout}
-                    className="w-full py-3 bg-red-50 text-red-600 font-medium rounded-lg hover:bg-red-100 transition-colors"
-                >
-                    로그아웃
-                </button>
+                <div className="px-4 py-3">
+                    {/* 사용자 정보 카드 */}
+                    <div className="bg-white rounded-lg shadow-sm border border-gray-100 mb-6">
+                        <div className="p-6">
+                            <div className="flex items-center ">
+                                <div className="w-16 h-16 bg-sky-100 rounded-full flex items-center justify-center text-sky-600 font-bold text-xl mr-4">
+                                    {userInfo?.name[0]}
+                                </div>
+                                <div>
+                                    <h2 className="text-xl font-bold text-gray-800">{userInfo?.name}</h2>
+                                    <p className="text-gray-600">{userInfo?.email}</p>
+                                    {/* <p className="text-sm text-gray-500">가입일: {userInfo?.createdAt}</p> */}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* 로그아웃 버튼 */}
+                    <button
+                        onClick={handleLogout}
+                        className="w-full py-3 bg-red-50 text-red-600 font-medium rounded-lg hover:bg-red-100 transition-colors"
+                    >
+                        로그아웃
+                    </button>
+                </div>
             </div>
         </Layout>
     );
