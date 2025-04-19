@@ -260,9 +260,9 @@ const MineralsRadarChart = ({ water }: MineralsRadarChartProps) => {
 
     // Define maximum values for scaling the bars (ADJUSTED based on user request and data analysis)
     const maxCalcium = 25; // Adjusted max value for Calcium
-    const maxMagnesium = 6; // Adjusted max value for Magnesium
-    const maxSodium = 12; // Adjusted max value for Sodium
-    const maxPotassium = 6; // Adjusted max value for Potassium
+    const maxMagnesium = 8; // Adjusted max value for Magnesium
+    const maxSodium = 10; // Adjusted max value for Sodium
+    const maxPotassium = 5; // Adjusted max value for Potassium
 
     return (
         // Container with themed background color
