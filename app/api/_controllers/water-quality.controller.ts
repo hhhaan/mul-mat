@@ -1,7 +1,7 @@
 // app/api/_controllers/waterQualityController.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { getAddressById, getWaterQualityForAddress } from '@/app/api/_services';
-import { estimateSOCL } from '@/app/api/_utils';
+import { estimateSOCA } from '@/app/api/_utils';
 
 export async function getWaterQualityByAddressIdx(request: NextRequest) {
     try {
@@ -31,7 +31,7 @@ export async function getWaterQualityByAddressIdx(request: NextRequest) {
         // 경도 값이 유효한 경우에만 계산 실행
         const hardness = waterQualityData.HR;
         if (hardness !== null && hardness !== undefined && !isNaN(Number(hardness))) {
-            const result = estimateSOCL(Number(hardness));
+            const result = estimateSOCA(Number(hardness));
             estimatedCalcium = result.estimatedCalcium;
             estimatedMagnesium = result.estimatedMagnesium;
         }

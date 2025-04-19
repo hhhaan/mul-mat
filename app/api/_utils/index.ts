@@ -1,1 +1,1 @@
-export { estimateSOCL } from './estimate-SO-CL';
+export { estimateSOCA } from './estimate-SO-CA';

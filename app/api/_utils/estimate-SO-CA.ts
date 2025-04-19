@@ -11,7 +11,7 @@
  * @param hardness 총 경도 (mg/L as CaCO₃)
  * @returns 추정된 칼슘과 마그네슘 농도 (mg/L)
  */
-export function estimateSOCL(hardness: number) {
+export function estimateSOCA(hardness: number) {
     const ratio = 3;
     // 칼슘과 마그네슘의 당량 계수
     const Ca_FACTOR = 2.497;
