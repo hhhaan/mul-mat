@@ -255,11 +255,15 @@ export const HomeScreen = () => {
                                 </div>
 
                                 <div className="grid grid-cols-2 gap-3">
-                                    <MineralCard title="칼슘(추정)" value="28.5" description="바디감과 단맛에 영향" />
+                                    <MineralCard
+                                        title="칼슘(추정)"
+                                        value={waterQuality.CA}
+                                        description="바디감과 단맛에 영향"
+                                    />
                                     <MineralCard
                                         title="마그네슘(추정)"
-                                        value="16.5"
-                                        description="산미와 추출 효율에 영향"
+                                        value={waterQuality.MG}
+                                        description="복합성에 영향"
                                     />
                                     <MineralCard
                                         title="황산염"
