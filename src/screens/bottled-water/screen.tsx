@@ -357,10 +357,10 @@ const WaterQualityApp = () => {
             name: '제주 삼다수',
             source: '제주시 조천읍 교래리',
             description2: '클린한 커피를 마시고 싶다면',
-            pH: '7.8', // example single value
-            hardness: '22', // example single value (considered soft)
-            calcium: '2.2~3.6',
-            magnesium: '1.0~2.8',
+            pH: '7.8',
+            hardness: '20',
+            calcium: '2.5~4.0',
+            magnesium: '1.7~3.5',
             potassium: '1.5~3.4',
             sodium: '4.0~7.2',
             gradient: 'bg-gradient-to-br from-blue-500 to-cyan-400',
@@ -376,12 +376,12 @@ const WaterQualityApp = () => {
             name: '평창수',
             source: '강원도 평창군',
             description2: '커피의 단맛을 원한다면',
-            pH: '7.8', // Example value, source might provide a range
-            hardness: '19.5~78', // Moderately hard range
-            calcium: '5.8~9.3',
-            magnesium: '1.0~1.9',
-            potassium: '0.3~1.4',
-            sodium: '3.5~7.5',
+            pH: '7.8',
+            hardness: '70', // Moderately hard range
+            calcium: '15.1~16.2',
+            magnesium: '2.3~2.5',
+            potassium: '0.6~0.7',
+            sodium: '6.2~6.6',
             gradient: 'bg-gradient-to-br from-emerald-500 to-green-400',
             textColor: 'text-emerald-600',
             bgColor: 'bg-emerald-600',
@@ -393,14 +393,14 @@ const WaterQualityApp = () => {
         {
             id: 3,
             name: '아이시스 8.0',
-            source: '경북 청도 / 충북 청주',
+            source: '충북 청주 상당구 미원면',
             description2: '커피의 화사함과 밝은 산미를 원한다면',
-            pH: '7.7~8.3', // Alkaline range
-            hardness: '64', // Example value (moderately hard)
-            calcium: '5.0~20.0', // Note: Original was '5~20.0', ensure consistent format
-            magnesium: '0.3~3.6',
-            potassium: '0.3~1.5',
-            sodium: '2.0~4.0',
+            pH: '8.0',
+            hardness: '60',
+            calcium: '14.6~22.0',
+            magnesium: '6.1~7.1',
+            potassium: '0.8~1.1',
+            sodium: '1.9~2.4',
             gradient: 'bg-gradient-to-br from-purple-500 to-violet-400',
             textColor: 'text-purple-600',
             bgColor: 'bg-purple-600',
@@ -414,9 +414,9 @@ const WaterQualityApp = () => {
             name: '백산수',
             source: '백두산 내두천',
             description2: '균형잡힌 맛을 원한다면',
-            pH: '7.2~7.4', // Near neutral
-            hardness: '30', // Example value (soft)
-            calcium: '3.0~5.8',
+            pH: '7.2~7.4',
+            hardness: '30',
+            calcium: '1.4~5.3',
             magnesium: '2.1~5.4',
             potassium: '1.4~5.3',
             sodium: '4.0~12.0',
