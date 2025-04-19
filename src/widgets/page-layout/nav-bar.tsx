@@ -29,7 +29,7 @@ export const NavBar = () => {
                         }}
                     >
                         <Search size={20} />
-                        <span className="text-xs mt-1">검색</span>
+                        <span className="text-xs mt-1">수질 조회</span>
                     </button>
 
                     <button
