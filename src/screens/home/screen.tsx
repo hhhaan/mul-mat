@@ -1,27 +1,38 @@
 'use client';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Layout } from '@/src/widgets/page-layout';
-import { Droplet, Droplets, AlertTriangle, ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
+import { Droplet, Droplets, ChevronLeft, ChevronRight, Calendar, MapPin, X, AlertCircle } from 'lucide-react';
 import { SearchContainer } from '@/src/widgets/search-container';
 import { Header } from '@/src/widgets/header';
-import { evaluateWaterQualityStatus, formatMonth, formatYear, getNextMonth } from '@/src/features/water-quality/utils';
+import { evaluateWaterQualityStatus, formatMonth, formatYear } from '@/src/features/water-quality/utils';
 import { WaterQualityCard } from '@/src/features/water-quality/ui';
 import { getPreviousMonth } from '@/src/features/water-quality/utils';
 import { ContactUs } from '@/src/widgets/contact-us';
 import { Disclaimer } from '@/src/widgets/disclaimer';
 import { useQuery } from '@tanstack/react-query';
 import { fetchWaterQualityData } from '@/src/features/water-quality/api';
+import { MineralCard } from '@/src/features/water-quality/ui';
+import { Spinner } from '@/src/shared/ui';
+import { FilterManagementAlert } from '@/src/features/recommned-filter/ui';
+import { useDateStore } from '@/src/features/water-quality/model/date-store';
 
 export const HomeScreen = () => {
-    const today = new Date();
-    const [year, setYear] = useState(today.getFullYear());
-    const [month, setMonth] = useState(today.getMonth());
-
     const [selectedId, setSelectedId] = useState<string | undefined>();
-    const retryCountRef = useRef(0);
-    const latestDateRef = useRef<string | null>(null);
 
-    const isInitial = useRef(true);
+    const {
+        year,
+        month,
+        latestDate,
+        setLatestDate,
+        // setMonth,
+        isInitial,
+        retryCount,
+        handlePrevMonth,
+        handleNextMonth,
+        resetDate,
+    } = useDateStore();
+
+    const [isCalenderOpen, setIsCalenderOpen] = useState(false);
 
     const {
         data: waterQuality,
@@ -43,19 +54,16 @@ export const HomeScreen = () => {
                 let searchMonth = month;
 
                 const tryPreviousMonths = () => {
-                    if (retryCountRef.current < MAX_RETRIES) {
+                    if (retryCount.current < MAX_RETRIES) {
                         const prevDate = getPreviousMonth(searchYear, searchMonth);
                         searchYear = prevDate.year;
                         searchMonth = prevDate.month;
 
-                        retryCountRef.current++;
+                        retryCount.current++;
 
-                        setYear(searchYear);
-                        setMonth(searchMonth);
+                        handlePrevMonth();
 
-                        console.log(
-                            `${retryCountRef.current}번째 시도: ${searchYear}년 ${searchMonth}월로 이동합니다.`
-                        );
+                        console.log(`${retryCount.current}번째 시도: ${searchYear}년 ${searchMonth}월로 이동합니다.`);
                     } else {
                         console.log(`최대 시도 횟수(${MAX_RETRIES})에 도달했습니다.`);
                     }
@@ -70,24 +78,17 @@ export const HomeScreen = () => {
         }
     }, [isError, selectedId, year, month]);
 
-    const handlePrevMonth = () => {
-        const prevDate = getPreviousMonth(year, month);
-        setYear(prevDate.year);
-        setMonth(prevDate.month);
+    const handleOpenCalender = () => {
+        setIsCalenderOpen(true);
     };
-
-    const handleNextMonth = () => {
-        const nextDate = getNextMonth(year, month);
-        console.log('clicked');
-        setYear(nextDate.year);
-        setMonth(nextDate.month);
+    const handleCloseCalender = () => {
+        setIsCalenderOpen(false);
     };
 
     useEffect(() => {
         if (isSuccess && waterQuality) {
             if (isInitial.current) {
-                // console.log(waterQuality);
-                latestDateRef.current = `${year}-${month}`;
+                setLatestDate(`${year}-${month}`);
                 isInitial.current = false;
             } else {
                 console.log(waterQuality);
@@ -96,15 +97,8 @@ export const HomeScreen = () => {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isSuccess, waterQuality]);
 
-    // 선택된 ID가 변경될 때 현재 년월로 초기화
     useEffect(() => {
-        if (selectedId) {
-            setYear(today.getFullYear());
-            setMonth(today.getMonth());
-            retryCountRef.current = 0;
-            latestDateRef.current = null;
-            isInitial.current = true;
-        }
+        resetDate();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedId]);
 
@@ -112,9 +106,7 @@ export const HomeScreen = () => {
         return (
             <Layout>
                 <Header />
-                <div className="flex items-center justify-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-cyan-400"></div>
-                </div>
+                <Spinner />
             </Layout>
         );
     }
@@ -152,19 +144,25 @@ export const HomeScreen = () => {
                                     }}
                                 />
                             </button>
-                            <div className="flex items-center text-sm font-medium text-gray-700">
-                                <Calendar size={16} className="mr-1 text-sky-600" />
-                                {year}년 {month}월
-                            </div>
+                            <button
+                                className="flex items-center text-sm font-medium text-gray-700 px-3 py-1 rounded-md hover:bg-sky-100 relative group"
+                                onClick={handleOpenCalender}
+                            >
+                                <span className="absolute -inset-1 bg-sky-200 opacity-0 group-hover:opacity-30 rounded-md transition-opacity duration-300 animate-pulse"></span>
+                                <Calendar size={16} className="mr-1 text-sky-600 animate-bounce" />
+                                <span className="relative z-10">
+                                    {year}년 {month}월
+                                </span>
+                            </button>
                             <button
                                 className={`p-2 rounded-full transition-colors duration-200 ${
-                                    latestDateRef.current !== `${year}-${month}`
+                                    latestDate !== `${year}-${month}`
                                         ? 'text-sky-600 hover:bg-sky-100 active:bg-sky-200'
                                         : 'text-gray-400 bg-gray-100 cursor-not-allowed'
                                 }`}
-                                disabled={latestDateRef.current === `${year}-${month}`}
+                                disabled={latestDate === `${year}-${month}`}
                                 onClick={() => {
-                                    if (latestDateRef.current !== `${year}-${month}`) {
+                                    if (latestDate !== `${year}-${month}`) {
                                         handleNextMonth();
                                     }
                                 }}
@@ -292,50 +290,157 @@ export const HomeScreen = () => {
                 </div>
                 <ContactUs />
             </div>
+            <CalendarModal isOpen={isCalenderOpen} onClose={handleCloseCalender} />
         </Layout>
     );
 };
 
-// 필터 관리 알림 컴포넌트
-export const FilterManagementAlert = ({ HR }: { HR: string | undefined }) => {
-    const hardnessLevel = HR ? Number(HR) : 0;
-    const filterRecommendation =
-        hardnessLevel > 150
-            ? '이 지역의 경도가 높아 필터 사용을 권장하며, 3개월마다 교체를 고려해주세요.'
-            : '이 지역의 경도는 적절한 수준입니다.';
-    const roRecommendation =
-        hardnessLevel > 100 ? '정수 시스템을 사용 중이라면 역삼투압(RO) 시스템에 미네랄 재첨가 기능이 권장됩니다.' : '';
+const CalendarModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
+    const { latestDate, setYear, setMonth } = useDateStore();
+
+    const [latestYear, latestMonth] = latestDate.split('-').map(Number);
+
+    // 0-인덱스 기반으로 정의된 monthNames
+    const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+
+    // 모달 내 선택 상태 즉, monthNames 인덱스
+    const [selectedYear, setSelectedYear] = useState(latestYear);
+    const [selectedMonth, setSelectedMonth] = useState(latestMonth - 1);
+
+    // console.log('selectedYear, selectedMonth', selectedYear, selectedMonth);
+    console.log('selectedMonth', monthNames[selectedMonth]);
+
+    // 모달 외부 클릭 시 닫기
+    const handleBackdropClick = (e: React.MouseEvent) => {
+        if (e.target === e.currentTarget) {
+            onClose();
+        }
+    };
+
+    const handlePrevYear = () => {
+        setSelectedYear((prev: number) => prev - 1);
+    };
+
+    const handleNextYear = () => {
+        setSelectedYear((prevYear) => {
+            const newYear = prevYear + 1;
+            // 연도 이동 후 미래 월이면 강제로 조정
+            if (newYear === latestYear && selectedMonth > latestMonth - 1) {
+                setSelectedMonth(latestMonth - 1);
+            }
+            return newYear;
+        });
+    };
+
+    const isFutureDate = (month: number) => {
+        if (selectedYear === latestYear && month > latestMonth - 1) return true;
+        if (selectedYear && latestYear && selectedYear === latestYear && month > latestMonth) return true;
+        return false;
+    };
+
+    // latestDate가 null이면 아무것도 렌더링하지 않음
+    if (!latestDate || !isOpen || !latestYear || !latestMonth) return null;
 
     return (
-        <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border-l-4 border-amber-400 p-3 rounded-lg mb-3">
-            <h4 className="font-medium flex items-center mb-1 text-sm text-amber-800">
-                <AlertTriangle size={16} className="mr-1 text-amber-600" />
-                필터 관리 알림
-            </h4>
-            <p className="text-xs text-amber-700 leading-relaxed">
-                {filterRecommendation} {roRecommendation}
-            </p>
-        </div>
-    );
-};
+        <div
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+            onClick={handleBackdropClick}
+        >
+            <div className="bg-white rounded-lg shadow-lg w-full max-w-sm overflow-hidden transform transition-all">
+                {/* 모달 헤더 */}
+                <div className="flex items-center justify-between p-4 border-b border-gray-100">
+                    <h2 className="text-lg font-semibold text-gray-800 flex items-center">
+                        <Calendar size={18} className="mr-2 text-sky-600" />
+                        날짜 선택
+                    </h2>
+                    <button
+                        className="text-gray-500 hover:text-gray-700 rounded-full p-1 hover:bg-gray-200"
+                        onClick={onClose}
+                    >
+                        <X size={20} />
+                    </button>
+                </div>
 
-// 미네랄 카드 컴포넌트
-const MineralCard = ({
-    title,
-    value,
-    description,
-}: {
-    title: string;
-    value: string | undefined;
-    description: string;
-}) => {
-    return (
-        <div className="bg-white rounded-lg p-3 shadow-sm">
-            <div className="text-xs text-sky-600 font-medium mb-1">{title}</div>
-            <div className="text-lg font-bold text-gray-800">
-                {value || '-'} <span className="text-xs font-normal text-gray-500">mg/L</span>
+                {/* 연도 선택 헤더 */}
+                <div className="flex items-center justify-between px-4 py-3 bg-gray-50">
+                    <button
+                        className="p-1 rounded-full text-sky-600 hover:bg-sky-100 disabled:text-gray-300 disabled:hover:bg-transparent"
+                        onClick={() => {
+                            handlePrevYear();
+                        }}
+                        disabled={selectedYear === latestYear - 3}
+                    >
+                        <ChevronLeft size={20} />
+                    </button>
+                    <span className="text-lg font-medium text-gray-800">{selectedYear}년</span>
+                    <button
+                        className="p-1 rounded-full text-sky-600 hover:bg-sky-100 disabled:text-gray-300 disabled:hover:bg-transparent"
+                        disabled={selectedYear === latestYear}
+                        onClick={() => {
+                            handleNextYear();
+                        }}
+                    >
+                        <ChevronRight size={20} />
+                    </button>
+                </div>
+
+                {/* 알림 메시지 */}
+                <div className="bg-amber-50 text-amber-800 text-xs p-2 flex items-center justify-center">
+                    <AlertCircle size={14} className="mr-1 text-amber-600" />
+                    {selectedYear === latestYear - 3
+                        ? '최대 3년까지 조회 가능합니다.'
+                        : `${latestDate} 이후의 데이터는 아직 없습니다`}
+                </div>
+
+                {/* 월 그리드 */}
+                <div className="grid grid-cols-3 gap-2 p-4">
+                    {monthNames.map((name, idx) => {
+                        const isSelected = idx === selectedMonth;
+                        const isFuture = isFutureDate(idx);
+
+                        return (
+                            <div
+                                key={idx}
+                                onClick={() => {
+                                    if (!isFuture) {
+                                        setSelectedMonth(idx);
+                                    }
+                                }}
+                                className={`
+                    flex items-center justify-center p-3 rounded-lg transition-colors
+                    ${isSelected ? 'bg-sky-600 text-white' : ''}
+                    ${!isSelected && !isFuture ? 'text-black bg-gray-100' : ''}
+                    ${
+                        isFuture
+                            ? 'opacity-40 bg-gray-100 text-gray-400 cursor-not-allowed filter blur-[0.5px]'
+                            : 'cursor-pointer hover:bg-sky-50'
+                    }
+                  `}
+                            >
+                                {name}
+                            </div>
+                        );
+                    })}
+                </div>
+
+                {/* 푸터 */}
+                <div className="border-t border-gray-200 px-4 py-3 flex justify-end space-x-2 bg-gray-50">
+                    <button className="px-4 py-2 text-sm rounded-lg text-gray-600 hover:bg-gray-100" onClick={onClose}>
+                        취소
+                    </button>
+                    <button
+                        className="px-4 py-2 text-sm rounded-lg bg-sky-600 text-white hover:bg-sky-700"
+                        onClick={() => {
+                            console.log('selectedYear', selectedYear, 'selectedMonth', selectedMonth);
+                            setYear(selectedYear);
+                            setMonth(selectedMonth + 1);
+                            onClose();
+                        }}
+                    >
+                        현재 선택: {selectedYear}년 {selectedMonth + 1}월
+                    </button>
+                </div>
             </div>
-            <div className="text-xs text-gray-600 mt-1">{description}</div>
         </div>
     );
 };
