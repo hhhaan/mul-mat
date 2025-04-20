@@ -1,7 +1,7 @@
 'use client';
 import { useEffect, useState } from 'react';
 import { Layout } from '@/src/widgets/page-layout';
-import { Droplet, Droplets, ChevronLeft, ChevronRight, Calendar, MapPin, X, AlertCircle } from 'lucide-react';
+import { Droplet, ChevronLeft, ChevronRight, Calendar, MapPin, X, AlertCircle } from 'lucide-react';
 import { SearchContainer } from '@/src/widgets/search-container';
 import { Header } from '@/src/widgets/header';
 import { evaluateWaterQualityStatus, formatMonth, formatYear } from '@/src/features/water-quality/utils';
@@ -11,10 +11,10 @@ import { ContactUs } from '@/src/widgets/contact-us';
 import { Disclaimer } from '@/src/widgets/disclaimer';
 import { useQuery } from '@tanstack/react-query';
 import { fetchWaterQualityData } from '@/src/features/water-quality/api';
-import { MineralCard } from '@/src/features/water-quality/ui';
 import { Spinner } from '@/src/shared/ui';
 import { FilterManagementAlert } from '@/src/features/recommned-filter/ui';
 import { useDateStore } from '@/src/features/water-quality/model/date-store';
+import { MineralSection } from '@/src/widgets/mineral-section';
 
 export const HomeScreen = () => {
     const [selectedId, setSelectedId] = useState<string | undefined>();
@@ -244,38 +244,7 @@ export const HomeScreen = () => {
                                 />
                             </div>
                             {/* 미네랄 성분 분석 */}
-                            <div className="bg-sky-50 rounded-xl p-4 mb-4 shadow-sm">
-                                <div className="flex justify-between items-center mb-4">
-                                    <h4 className="font-medium text-sm text-sky-500 flex items-center">
-                                        <Droplets size={18} className="mr-2 text-sky-500" />
-                                        미네랄 성분 분석
-                                    </h4>
-                                </div>
-
-                                <div className="grid grid-cols-2 gap-3">
-                                    <MineralCard
-                                        title="칼슘(추정)"
-                                        value={waterQuality.CA}
-                                        description="바디감과 단맛에 영향"
-                                    />
-                                    <MineralCard
-                                        title="마그네슘(추정)"
-                                        value={waterQuality.MG}
-                                        description="복합성에 영향"
-                                    />
-                                    <MineralCard
-                                        title="황산염"
-                                        value={waterQuality.SO}
-                                        description="쓴맛 완화, 밸런스"
-                                    />
-                                    <MineralCard
-                                        title="염소이온"
-                                        value={waterQuality.CL}
-                                        description="부식 가능성, 쓴맛 강조"
-                                    />
-                                </div>
-                            </div>
-
+                            <MineralSection waterQuality={waterQuality} />
                             {/* 카페 필터 정보 */}
                             <div className="bg-white rounded-lg shadow-sm p-4 mt-4">
                                 <div className="border-b border-gray-100 pb-2 mb-3">
@@ -296,7 +265,7 @@ export const HomeScreen = () => {
 };
 
 const CalendarModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-    const { latestDate, setYear, setMonth } = useDateStore();
+    const { year, month, setYear, setMonth, latestDate } = useDateStore();
 
     const [latestYear, latestMonth] = latestDate.split('-').map(Number);
 
@@ -304,8 +273,8 @@ const CalendarModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => vo
     const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
     // 모달 내 선택 상태 즉, monthNames 인덱스
-    const [selectedYear, setSelectedYear] = useState(latestYear);
-    const [selectedMonth, setSelectedMonth] = useState(latestMonth - 1);
+    const [selectedYear, setSelectedYear] = useState(year);
+    const [selectedMonth, setSelectedMonth] = useState(month - 1);
 
     // console.log('selectedYear, selectedMonth', selectedYear, selectedMonth);
     console.log('selectedMonth', monthNames[selectedMonth]);
