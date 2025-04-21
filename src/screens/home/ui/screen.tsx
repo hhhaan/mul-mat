@@ -1,20 +1,23 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { Layout } from '@/src/widgets/page-layout';
-import { Droplet, ChevronLeft, ChevronRight, Calendar, MapPin, X, AlertCircle } from 'lucide-react';
 import { SearchContainer } from '@/src/widgets/search-container';
-import { Header } from '@/src/widgets/header';
 import { evaluateWaterQualityStatus, formatMonth, formatYear } from '@/src/features/water-quality/utils';
-import { WaterQualityCard } from '@/src/features/water-quality/ui';
 import { getPreviousMonth } from '@/src/features/water-quality/utils';
-import { ContactUs } from '@/src/widgets/contact-us';
-import { Disclaimer } from '@/src/widgets/disclaimer';
 import { useQuery } from '@tanstack/react-query';
 import { fetchWaterQualityData } from '@/src/features/water-quality/api';
-import { Spinner } from '@/src/shared/ui';
 import { FilterManagementAlert } from '@/src/features/recommned-filter/ui';
 import { useDateStore } from '@/src/features/water-quality/model/date-store';
+
+import { Layout } from '@/src/widgets/page-layout';
+import { Header } from './header';
+import { Disclaimer } from './disclaimer';
+import { ContactUs } from './contact-us';
+import { WaterQualityCard, CalendarModal } from '@/src/features/water-quality/ui';
+
 import { MineralSection } from '@/src/widgets/mineral-section';
+import { Spinner } from '@/src/shared/ui';
+
+import { Droplet, ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
 
 export const HomeScreen = () => {
     const [selectedId, setSelectedId] = useState<string | undefined>();
@@ -261,155 +264,5 @@ export const HomeScreen = () => {
             </div>
             <CalendarModal isOpen={isCalenderOpen} onClose={handleCloseCalender} />
         </Layout>
-    );
-};
-
-const CalendarModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) => {
-    const { year, month, setYear, setMonth, latestDate } = useDateStore();
-
-    const [latestYear, latestMonth] = latestDate.split('-').map(Number);
-
-    // 0-인덱스 기반으로 정의된 monthNames
-    const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
-
-    // 모달 내 선택 상태 즉, monthNames 인덱스
-    const [selectedYear, setSelectedYear] = useState(year);
-    const [selectedMonth, setSelectedMonth] = useState(month - 1);
-
-    // console.log('selectedYear, selectedMonth', selectedYear, selectedMonth);
-    console.log('selectedMonth', monthNames[selectedMonth]);
-
-    // 모달 외부 클릭 시 닫기
-    const handleBackdropClick = (e: React.MouseEvent) => {
-        if (e.target === e.currentTarget) {
-            onClose();
-        }
-    };
-
-    const handlePrevYear = () => {
-        setSelectedYear((prev: number) => prev - 1);
-    };
-
-    const handleNextYear = () => {
-        setSelectedYear((prevYear) => {
-            const newYear = prevYear + 1;
-            // 연도 이동 후 미래 월이면 강제로 조정
-            if (newYear === latestYear && selectedMonth > latestMonth - 1) {
-                setSelectedMonth(latestMonth - 1);
-            }
-            return newYear;
-        });
-    };
-
-    const isFutureDate = (month: number) => {
-        if (selectedYear === latestYear && month > latestMonth - 1) return true;
-        if (selectedYear && latestYear && selectedYear === latestYear && month > latestMonth) return true;
-        return false;
-    };
-
-    // latestDate가 null이면 아무것도 렌더링하지 않음
-    if (!latestDate || !isOpen || !latestYear || !latestMonth) return null;
-
-    return (
-        <div
-            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
-            onClick={handleBackdropClick}
-        >
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-sm overflow-hidden transform transition-all">
-                {/* 모달 헤더 */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-100">
-                    <h2 className="text-lg font-semibold text-gray-800 flex items-center">
-                        <Calendar size={18} className="mr-2 text-sky-600" />
-                        날짜 선택
-                    </h2>
-                    <button
-                        className="text-gray-500 hover:text-gray-700 rounded-full p-1 hover:bg-gray-200"
-                        onClick={onClose}
-                    >
-                        <X size={20} />
-                    </button>
-                </div>
-
-                {/* 연도 선택 헤더 */}
-                <div className="flex items-center justify-between px-4 py-3 bg-gray-50">
-                    <button
-                        className="p-1 rounded-full text-sky-600 hover:bg-sky-100 disabled:text-gray-300 disabled:hover:bg-transparent"
-                        onClick={() => {
-                            handlePrevYear();
-                        }}
-                        disabled={selectedYear === latestYear - 3}
-                    >
-                        <ChevronLeft size={20} />
-                    </button>
-                    <span className="text-lg font-medium text-gray-800">{selectedYear}년</span>
-                    <button
-                        className="p-1 rounded-full text-sky-600 hover:bg-sky-100 disabled:text-gray-300 disabled:hover:bg-transparent"
-                        disabled={selectedYear === latestYear}
-                        onClick={() => {
-                            handleNextYear();
-                        }}
-                    >
-                        <ChevronRight size={20} />
-                    </button>
-                </div>
-
-                {/* 알림 메시지 */}
-                <div className="bg-amber-50 text-amber-800 text-xs p-2 flex items-center justify-center">
-                    <AlertCircle size={14} className="mr-1 text-amber-600" />
-                    {selectedYear === latestYear - 3
-                        ? '최대 3년까지 조회 가능합니다.'
-                        : `${latestDate} 이후의 데이터는 아직 없습니다`}
-                </div>
-
-                {/* 월 그리드 */}
-                <div className="grid grid-cols-3 gap-2 p-4">
-                    {monthNames.map((name, idx) => {
-                        const isSelected = idx === selectedMonth;
-                        const isFuture = isFutureDate(idx);
-
-                        return (
-                            <div
-                                key={idx}
-                                onClick={() => {
-                                    if (!isFuture) {
-                                        setSelectedMonth(idx);
-                                    }
-                                }}
-                                className={`
-                    flex items-center justify-center p-3 rounded-lg transition-colors
-                    ${isSelected ? 'bg-sky-600 text-white' : ''}
-                    ${!isSelected && !isFuture ? 'text-black bg-gray-100' : ''}
-                    ${
-                        isFuture
-                            ? 'opacity-40 bg-gray-100 text-gray-400 cursor-not-allowed filter blur-[0.5px]'
-                            : 'cursor-pointer hover:bg-sky-50'
-                    }
-                  `}
-                            >
-                                {name}
-                            </div>
-                        );
-                    })}
-                </div>
-
-                {/* 푸터 */}
-                <div className="border-t border-gray-200 px-4 py-3 flex justify-end space-x-2 bg-gray-50">
-                    <button className="px-4 py-2 text-sm rounded-lg text-gray-600 hover:bg-gray-100" onClick={onClose}>
-                        취소
-                    </button>
-                    <button
-                        className="px-4 py-2 text-sm rounded-lg bg-sky-600 text-white hover:bg-sky-700"
-                        onClick={() => {
-                            console.log('selectedYear', selectedYear, 'selectedMonth', selectedMonth);
-                            setYear(selectedYear);
-                            setMonth(selectedMonth + 1);
-                            onClose();
-                        }}
-                    >
-                        현재 선택: {selectedYear}년 {selectedMonth + 1}월
-                    </button>
-                </div>
-            </div>
-        </div>
     );
 };
