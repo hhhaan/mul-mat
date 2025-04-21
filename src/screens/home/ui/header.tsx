@@ -14,7 +14,7 @@ export const Header = () => {
             <div className="relative z-10 flex items-center justify-between">
                 {/* 왼쪽 텍스트 */}
                 <div className="text-white">
-                    <h2 className="text-2xl font-bold mb-1">우리 카페 물맛</h2>
+                    <h2 className="text-2xl font-bold mb-1">우리 동네 물맛</h2>
                     <div className="inline-block bg-white/20 backdrop-blur-sm text-xs py-1 px-2 rounded-full mt-2">
                         공공데이터 기반 정수장 수질 정보 제공
                     </div>
