@@ -1,12 +1,9 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SearchContainer } from '@/src/widgets/search-container';
-import { evaluateWaterQualityStatus, formatMonth, formatYear } from '@/src/features/water-quality/utils';
-import { getPreviousMonth } from '@/src/features/water-quality/utils';
-import { useQuery } from '@tanstack/react-query';
-import { fetchWaterQualityData } from '@/src/features/water-quality/api';
+import { evaluateWaterQualityStatus } from '@/src/features/water-quality/utils';
 import { FilterManagementAlert } from '@/src/features/recommned-filter/ui';
-import { useDateStore } from '@/src/features/water-quality/model/date-store';
+import { useFetchWaterQuality } from '@/src/features/water-quality/hooks';
 
 import { Layout } from '@/src/widgets/page-layout';
 import { Header } from './header';
@@ -18,92 +15,24 @@ import { MineralSection } from '@/src/widgets/mineral-section';
 import { Spinner } from '@/src/shared/ui';
 
 import { Droplet, ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
+import { WaterQualityData } from '@/src/features/water-quality/types';
+import { useDateStore } from '@/src/features/water-quality/model';
 
 export const HomeScreen = () => {
     const [selectedId, setSelectedId] = useState<string | undefined>();
-
-    const {
-        year,
-        month,
-        latestDate,
-        setLatestDate,
-        // setMonth,
-        isInitial,
-        retryCount,
-        handlePrevMonth,
-        handleNextMonth,
-        resetDate,
-    } = useDateStore();
-
     const [isCalenderOpen, setIsCalenderOpen] = useState(false);
 
-    const {
-        data: waterQuality,
-        isLoading,
-        isError,
-        isSuccess,
-    } = useQuery({
-        queryKey: ['waterQuality', selectedId, formatYear(year), formatMonth(month)],
-        queryFn: () => fetchWaterQualityData({ id: selectedId, year: formatYear(year), month: formatMonth(month) }),
-        enabled: !!selectedId,
-        retry: 1,
-    });
-    // 오류 발생 시 이전 달로 이동
-    useEffect(() => {
-        if (isError) {
-            if (selectedId && isInitial.current) {
-                const MAX_RETRIES = 2;
-                let searchYear = year;
-                let searchMonth = month;
+    const { year, month, latestDate, handlePrevMonth, handleNextMonth } = useDateStore();
 
-                const tryPreviousMonths = () => {
-                    if (retryCount.current < MAX_RETRIES) {
-                        const prevDate = getPreviousMonth(searchYear, searchMonth);
-                        searchYear = prevDate.year;
-                        searchMonth = prevDate.month;
-
-                        retryCount.current++;
-
-                        handlePrevMonth();
-
-                        console.log(`${retryCount.current}번째 시도: ${searchYear}년 ${searchMonth}월로 이동합니다.`);
-                    } else {
-                        console.log(`최대 시도 횟수(${MAX_RETRIES})에 도달했습니다.`);
-                    }
-                };
-
-                tryPreviousMonths();
-            } else if (selectedId && isInitial.current == false) {
-                alert('죄송해요. 해당 지역의 데이터가 없어요');
-            } else {
-                console.log('isError', isError);
-            }
-        }
-    }, [isError, selectedId, year, month]);
+    const { isLoading, waterQuality } = useFetchWaterQuality(selectedId);
 
     const handleOpenCalender = () => {
         setIsCalenderOpen(true);
     };
+
     const handleCloseCalender = () => {
         setIsCalenderOpen(false);
     };
-
-    useEffect(() => {
-        if (isSuccess && waterQuality) {
-            if (isInitial.current) {
-                setLatestDate(`${year}-${month}`);
-                isInitial.current = false;
-            } else {
-                console.log(waterQuality);
-            }
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [isSuccess, waterQuality]);
-
-    useEffect(() => {
-        resetDate();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [selectedId]);
 
     if (isLoading) {
         return (
@@ -175,7 +104,7 @@ export const HomeScreen = () => {
                             </button>
                         </div>
                     )}
-                    {!waterQuality?.HR ? (
+                    {!waterQuality?.HR && !waterQuality?.PH && !waterQuality?.TDS && !waterQuality?.RC ? (
                         <div className="bg-gray-50 p-4 rounded-lg text-center">
                             <p className="text-gray-500">주소를 검색하고 수질 데이터를 조회해 보세요.</p>
                         </div>
@@ -249,14 +178,7 @@ export const HomeScreen = () => {
                             {/* 미네랄 성분 분석 */}
                             <MineralSection waterQuality={waterQuality} />
                             {/* 카페 필터 정보 */}
-                            <div className="bg-white rounded-lg shadow-sm p-4 mt-4">
-                                <div className="border-b border-gray-100 pb-2 mb-3">
-                                    <h2 className="text-lg font-bold text-gray-800">카페 필터 시스템 관리</h2>
-                                </div>
-
-                                <FilterManagementAlert HR={waterQuality?.HR} />
-                                <Disclaimer />
-                            </div>
+                            <FilterRecommendSection waterQuality={waterQuality} />
                         </>
                     )}
                 </div>
@@ -264,5 +186,18 @@ export const HomeScreen = () => {
             </div>
             <CalendarModal isOpen={isCalenderOpen} onClose={handleCloseCalender} />
         </Layout>
+    );
+};
+
+const FilterRecommendSection = ({ waterQuality }: { waterQuality: WaterQualityData }) => {
+    return (
+        <div className="bg-white rounded-lg shadow-sm p-4 mt-4">
+            <div className="border-b border-gray-100 pb-2 mb-3">
+                <h2 className="text-lg font-bold text-gray-800">카페 필터 시스템 관리</h2>
+            </div>
+
+            <FilterManagementAlert HR={waterQuality?.HR} />
+            <Disclaimer />
+        </div>
     );
 };
