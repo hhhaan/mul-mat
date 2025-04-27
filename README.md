@@ -40,23 +40,24 @@
 
 ````
 mul-mat/
-├── app/          # 페이지 및 라우팅
+├── app/          # nextjs 페이지 라우팅, api 라우트
 ├── src/
 │ ├── shared/     # 공통 유틸리티, UI 키트, API
 │ ├── entities/   # 비즈니스 엔티티 (사용자, 상품 등)
 │ ├── features/   # 비즈니스 기능 구현
 │ ├── widgets/    # 복합 UI 컴포넌트
-│ └── pages/      # 페이지 컴포넌트
+│ └── screens/      # 페이지 컴포넌트
 ├── public/       # 정적 파일
 ├── public/ # 정적 파일
 └── ...
 ### FSD 레이어 설명
-
-- **shared**: 공통으로 사용되는 UI 컴포넌트, 유틸리티 함수, API 클라이언트
-- **entities**: 핵심 비즈니스 엔티티 모델 및 관련 로직
-- **features**: 사용자 시나리오 및 비즈니스 기능 구현
-- **widgets**: 여러 features를 조합한 복합 UI 블록
-- **pages**: 최종 페이지 컴포넌트
+- app : 최상위 컴포넌트, 프로바이더 설정 등
+- shared : 공통으로 사용되는 UI 컴포넌트, 유틸리티 함수, API 클라이언트
+- entities : 핵심 비즈니스 엔티티 모델 및 관련 로직
+- features : 사용자 시나리오 및 비즈니스 기능 구현
+- widgets : 여러 features를 조합한 복합 UI 블록
+- screens : 최종 스크린 컴포넌트
+-
 
 ## 시작하기
 
