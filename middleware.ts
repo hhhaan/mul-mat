@@ -5,6 +5,18 @@ export async function middleware(request: NextRequest) {
     if (process.env.NODE_ENV === 'development') {
         return NextResponse.next();
     }
+
+    const publicPath = ['/', '/login', '/bottled-water', '/calculator'];
+
+    const url = new URL(request.url);
+    const isPublicPath = publicPath.includes(url.pathname);
+
+    // 공개 페이지일 경우 인증 없이 통과
+    if (isPublicPath) {
+        return NextResponse.next();
+    }
+
+    // 인증 처리
     return await updateSession(request);
 }
 
