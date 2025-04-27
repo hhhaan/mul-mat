@@ -22,6 +22,9 @@ interface UserState {
     setUser: (user: User | null) => void;
     signOut: () => Promise<void>;
     getUser: () => Promise<void>;
+    checkAuth: () => Promise<boolean>;
+    redirectToLogin: (redirectPath?: string) => void;
+    requireAuth: (callback: () => void) => Promise<void>;
 }
 
 const extractUserInfo = (user: User | null): UserInfo | null => {
@@ -37,7 +40,7 @@ const extractUserInfo = (user: User | null): UserInfo | null => {
 
 export const useUserStore = create<UserState>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             user: null,
             userInfo: null,
             error: null,
@@ -66,10 +69,10 @@ export const useUserStore = create<UserState>()(
             signOut: async () => {
                 try {
                     set({ loading: true, error: null });
-                    const supabase = createClient(); // 함수 내부에서 초기화
+                    const supabase = createClient();
                     await supabase.auth.signOut();
                     set({ user: null, userInfo: null, loading: false });
-                    window.location.href = '/login';
+                    window.location.href = '/'; // 홈페이지로 리다이렉트
                 } catch (error) {
                     console.error('로그아웃 오류:', error);
                     set({ error: error as Error, loading: false });
@@ -94,6 +97,67 @@ export const useUserStore = create<UserState>()(
             setUser: (user: User | null) => {
                 const userInfo = extractUserInfo(user);
                 set({ user, userInfo, loading: false, error: null });
+            },
+            // 추가된 메서드: 인증 확인
+            checkAuth: async () => {
+                if (get().user) {
+                    return true;
+                }
+
+                try {
+                    set({ loading: true, error: null });
+                    const supabase = createClient();
+                    const { data, error } = await supabase.auth.getSession();
+
+                    if (error) throw error;
+
+                    const isAuthenticated = !!data.session;
+
+                    if (isAuthenticated && data.session?.user) {
+                        const userInfo = extractUserInfo(data.session.user);
+                        set({ user: data.session.user, userInfo });
+                    }
+
+                    set({ loading: false });
+                    return isAuthenticated;
+                } catch (error) {
+                    console.error('인증 확인 오류:', error);
+                    set({
+                        user: null,
+                        userInfo: null,
+                        error: error as Error,
+                        loading: false,
+                    });
+                    return false;
+                }
+            },
+
+            // 추가된 메서드: 로그인 페이지로 리다이렉트
+            redirectToLogin: (redirectPath?: string) => {
+                const path = '/login';
+                const query = redirectPath ? `?redirect=${encodeURIComponent(redirectPath)}` : '';
+                window.location.href = `${path}${query}`;
+            },
+
+            // 추가된 메서드: 인증 필요 액션 실행
+            requireAuth: async (callback: () => void) => {
+                const isAuthenticated = await get().checkAuth();
+
+                if (isAuthenticated) {
+                    callback();
+                } else {
+                    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '/';
+                    const confirmed =
+                        typeof window !== 'undefined'
+                            ? window.confirm(
+                                  '이 기능을 사용하려면 로그인이 필요합니다. 로그인 페이지로 이동하시겠습니까?'
+                              )
+                            : false;
+
+                    if (confirmed) {
+                        get().redirectToLogin(currentPath);
+                    }
+                }
             },
         }),
         {
