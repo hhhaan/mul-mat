@@ -1,1 +1,1 @@
-export { EYCalculatorScreen } from './screen';
+export { EYCalculatorScreen } from './ui/screen';

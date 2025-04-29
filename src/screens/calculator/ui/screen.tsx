@@ -1,10 +1,10 @@
 'use client';
 
-import { Coffee, Ratio, Droplet, ChevronLeft, ChevronRight, Activity, Info } from 'lucide-react';
-import { Layout } from '@/src/widgets/page-layout';
-import { useCalculator } from '@/src/features/extraction-yield-calculate/hooks/useCalculator';
-
 import { useRouter } from 'next/navigation';
+import { useCalculator } from '@/src/features/extraction-yield-calculate/hooks/useCalculator';
+import { Layout } from '@/src/widgets/page-layout';
+import { HelpSection } from './help-section';
+import { Coffee, Ratio, Droplet, ChevronLeft, ChevronRight, Activity } from 'lucide-react';
 
 export const EYCalculatorScreen = () => {
     const { inputValues, result, calculated, handleInputChange, calculate } = useCalculator();
@@ -187,18 +187,7 @@ export const EYCalculatorScreen = () => {
                 )}
 
                 {/* 도움말 섹션 */}
-                <div className="px-4 mb-6">
-                    <div className="bg-white p-4 rounded-xl border border-sky-100">
-                        <h3 className="text-sm font-medium mb-3 flex items-center text-sky-700">
-                            <Info size={16} className="mr-1.5" />
-                            도움말
-                        </h3>
-                        <div className="text-xs text-gray-600 p-3 rounded-lg bg-white">
-                            <p className="mb-2">* 수율 계산 공식: (TDS × 물의 양) ÷ 원두 무게</p>
-                            <p>* TDS(Total Dissolved Solids)는 추출된 커피에 녹아있는 고형분의 비율입니다.</p>
-                        </div>
-                    </div>
-                </div>
+                <HelpSection />
             </div>
         </Layout>
     );
