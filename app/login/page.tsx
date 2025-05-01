@@ -1,5 +1,5 @@
-import { LoginWidgets } from '@/src/widgets/login';
+import { LoginForm } from '@/src/widgets/login-form';
 
 export default function Login() {
-    return <LoginWidgets />;
+    return <LoginForm />;
 }

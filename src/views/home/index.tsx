@@ -6,12 +6,14 @@ import { FilterManagementAlert } from '@/src/features/recommned-filter/ui';
 import { useFetchWaterQuality } from '@/src/features/water-quality/hooks';
 
 import { Layout } from '@/src/widgets/page-layout';
-import { Header } from './header';
-import { Disclaimer } from './disclaimer';
-import { ContactUs } from './contact-us';
-import { WaterQualityCard, CalendarModal } from '@/src/features/water-quality/ui';
+import { Header } from './ui/header';
+import { Disclaimer } from './ui/disclaimer';
+import { ContactUs } from './ui/contact-us';
+import { WaterQualityCard } from '@/src/features/water-quality/ui';
 
 import { MineralSection } from '@/src/widgets/mineral-section';
+import { CalendarModal } from '@/src/widgets/calender-modal';
+import { PWAInstallModal } from '@/src/widgets/pwa-install-modal';
 import { Spinner } from '@/src/shared/ui';
 
 import { Droplet, ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
@@ -185,6 +187,7 @@ export const HomeScreen = () => {
                 <ContactUs />
             </div>
             <CalendarModal isOpen={isCalenderOpen} onClose={handleCloseCalender} />
+            <PWAInstallModal />
         </Layout>
     );
 };

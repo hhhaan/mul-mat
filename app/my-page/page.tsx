@@ -1,5 +1,5 @@
-import { MyPageScreen } from '@/src/screens';
+import { MyPageView } from '@/src/views';
 
 export default function MyPage() {
-    return <MyPageScreen />;
+    return <MyPageView />;
 }
