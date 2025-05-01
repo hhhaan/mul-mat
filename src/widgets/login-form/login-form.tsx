@@ -4,7 +4,7 @@ import { Droplets } from 'lucide-react';
 
 import { KakaoLoginButton } from '@/src/features/auth/ui/kakao-login-button';
 
-export const LoginWidgets = () => {
+export const LoginForm = () => {
     return (
         <div className="flex flex-col items-center justify-center min-h-screen bg-gradient-to-b from-blue-50 to-white p-4">
             {/* Logo and App Name */}
@@ -41,7 +41,7 @@ export const LoginWidgets = () => {
                     <button
                         className="w-full flex items-center justify-center py-3 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none"
                         onClick={() => {
-                            alert('없음 ㅋ');
+                            alert('준비 중입니다');
                         }}
                     >
                         다른 방법으로 로그인

@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight, Calendar, X, AlertCircle } from 'lucide-react';
-import { useCalendarModal } from '../../model';
+import { useCalendarModal } from '../../features/water-quality/model';
 
 interface CalendarModalProps {
     isOpen: boolean;
@@ -36,7 +36,10 @@ export const CalendarModal = ({ isOpen, onClose }: CalendarModalProps) => {
             className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
             onClick={handleBackdropClick}
         >
-            <div className="bg-white rounded-lg shadow-lg w-full max-w-sm overflow-hidden transform transition-all">
+            <div
+                className="bg-white rounded-lg shadow-lg w-full max-w-sm overflow-hidden transform transition-all"
+                onClick={(e) => e.stopPropagation()}
+            >
                 {/* 모달 헤더 */}
                 <div className="flex items-center justify-between p-4 border-b border-gray-100">
                     <h2 className="text-lg font-semibold text-gray-800 flex items-center">
