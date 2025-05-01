@@ -1,5 +1,5 @@
-import { EYCalculatorScreen } from '@/src/screens';
+import { CalculatorPage } from '@/src/views/calculator';
 
 export default function EYCalculatorPage() {
-    return <EYCalculatorScreen />;
+    return <CalculatorPage />;
 }
