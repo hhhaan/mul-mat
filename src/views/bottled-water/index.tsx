@@ -548,9 +548,8 @@ const WaterQualityApp = () => {
                     ))}
                 </div>
             </div>
-
             {/* Footer Notice Section */}
-            <div className="bg-gray-100 px-4 py-3 text-xs text-gray-500 border-t border-gray-200 rounded-b-xl relative mt-4">
+            <div className="bg-gray-100 px-4 py-3 text-xs text-gray-500 border-t border-gray-200  relative mt-4">
                 <p className="flex items-center">
                     <Info size={12} className="mr-1 flex-shrink-0" />
                     <span>
