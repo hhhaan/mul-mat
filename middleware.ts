@@ -1,7 +1,12 @@
-import { type NextRequest, NextResponse } from 'next/server';
-import { updateSession } from '@/src/shared/utils/supabase/middleware';
+import { NextResponse } from 'next/server';
+// import { updateSession } from '@/src/shared/utils/supabase/middleware';
 
-export async function middleware(request: NextRequest) {
+export async function middleware() {
+    // export async function middleware(request: NextRequest) {
+    // 인증 기능 임시 비활성화
+    return NextResponse.next();
+
+    /*
     if (process.env.NODE_ENV === 'development') {
         return NextResponse.next();
     }
@@ -18,17 +23,9 @@ export async function middleware(request: NextRequest) {
 
     // 인증 처리
     return await updateSession(request);
+    */
 }
 
 export const config = {
-    matcher: [
-        /*
-         * Match all request paths except for the ones starting with:
-         * - _next/static (static files)
-         * - _next/image (image optimization files)
-         * - favicon.ico (favicon file)
-         * Feel free to modify this pattern to include more paths.
-         */
-        '/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
-    ],
+    matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
 };
