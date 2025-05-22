@@ -18,7 +18,7 @@ export const SuggestionList = forwardRef<HTMLDivElement, SuggestionListProps>(
         return (
             <div
                 ref={ref}
-                className="absolute z-10 mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto z-50"
+                className="absolute  mt-1 w-full bg-white border border-gray-200 rounded-md shadow-lg max-h-60 overflow-auto z-50"
             >
                 <ul>
                     {suggestions.map((suggestion, index) => (
