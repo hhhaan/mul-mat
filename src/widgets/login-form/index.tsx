@@ -13,7 +13,7 @@ export const LoginForm = () => {
                     <Droplets size={48} className="text-white" />
                 </div>
                 <h1 className="text-2xl font-bold text-blue-800">물맛</h1>
-                <p className="text-gray-600 mt-2 text-center">우리 동네 물맛을 알아보자</p>
+                <p className="text-gray-600 mt-2 text-center">우리 카페 물맛을 알아보자</p>
             </div>
 
             {/* Login Container */}
