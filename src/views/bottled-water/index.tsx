@@ -5,7 +5,7 @@ import { Droplet, TrendingUp, Info, Activity } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
 import { Layout } from '@/src/widgets/page-layout';
-import { PageHeader } from '@/src/widgets/page-header';
+// import { PageHeader } from '@/src/widgets/page-header';
 
 // --- Type Definitions ---
 
@@ -451,7 +451,7 @@ const WaterQualityApp = () => {
         // Main container for the app UI
         <div className="w-full">
             {/* Application Header */}
-            <PageHeader title="생수 수질 정보" onBackClick={() => router.replace('/')} />
+            {/* <PageHeader title="생수 수질 정보" onBackClick={() => router.replace('/')} /> */}
 
             {/* Water Selection Tabs */}
             <WaterSelectionTabs
