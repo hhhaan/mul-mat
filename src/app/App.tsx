@@ -1,18 +1,15 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import localFont from 'next/font/local';
 import { Provider } from './provider/provider';
 import Script from 'next/script';
 
 import './styles/globals.css';
 
-const geistSans = Geist({
-    variable: '--font-geist-sans',
-    subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-    variable: '--font-geist-mono',
-    subsets: ['latin'],
+const pretendard = localFont({
+    src: './../../public/fonts/PretendardVariable.woff2',
+    variable: '--font-pretendard',
+    weight: '45 920',
+    display: 'swap',
 });
 
 export const metadata: Metadata = {
@@ -22,11 +19,11 @@ export const metadata: Metadata = {
 
 export const App = ({ children }: { children: React.ReactNode }) => {
     return (
-        <html lang="en">
+        <html lang="ko">
             <head>
                 <link rel="manifest" href="/manifest.json" />
             </head>
-            <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+            <body className={`${pretendard.variable} antialiased`}>
                 <Provider>{children}</Provider>
 
                 {/* Google Analytics */}
