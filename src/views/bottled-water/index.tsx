@@ -2,7 +2,7 @@
 
 import { useState, useEffect, ReactNode, Dispatch, SetStateAction } from 'react';
 import { Droplet, TrendingUp, Info, Activity } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+// import { useRouter } from 'next/navigation';
 
 import { Layout } from '@/src/widgets/page-layout';
 // import { PageHeader } from '@/src/widgets/page-header';
@@ -330,7 +330,7 @@ const WaterSelectionTabs = ({ bottledWaterData, selectedWaterId, setSelectedWate
 
 // Main application component orchestrating the UI
 const WaterQualityApp = () => {
-    const router = useRouter();
+    // const router = useRouter();
 
     // Static bottled water data - typed with the BottledWater interface
     // In a real app, this might come from an API
