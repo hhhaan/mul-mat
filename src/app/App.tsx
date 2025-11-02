@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { Provider } from './provider/provider';
 import Script from 'next/script';
+import { NuqsAdapter } from 'nuqs/adapters/next';
 
 import './styles/globals.css';
 
@@ -19,12 +20,12 @@ export const metadata: Metadata = {
 
 export const App = ({ children }: { children: React.ReactNode }) => {
     return (
-        <html lang="ko">
+        <html lang="ko" className={pretendard.variable}>
             <head>
                 <link rel="manifest" href="/manifest.json" />
             </head>
-            <body className={`${pretendard.variable} antialiased`}>
-                <Provider>{children}</Provider>
+            <body className="font-sans antialiased">
+                <Providers>{children}</Providers>
 
                 {/* Google Analytics */}
                 <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-60E91B6QPQ" />
@@ -38,5 +39,13 @@ export const App = ({ children }: { children: React.ReactNode }) => {
                 </Script>
             </body>
         </html>
+    );
+};
+
+export const Providers = ({ children }: { children: React.ReactNode }) => {
+    return (
+        <Provider>
+            <NuqsAdapter>{children}</NuqsAdapter>
+        </Provider>
     );
 };

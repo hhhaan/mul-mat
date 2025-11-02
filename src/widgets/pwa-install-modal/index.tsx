@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { Share, X, Box, MoreVertical, Download, MonitorDown } from 'lucide-react';
 
-import { storageUtils } from '@/src/features/pwa-install/utils';
-import { detectEnvironment, isStandalone } from '@/src/features/pwa-install/utils';
+import { storageUtils } from '@/src/features/pwa-installation/utils';
+import { detectEnvironment, isStandalone } from '@/src/features/pwa-installation/utils';
 
 // 컴포넌트 외부로 인터페이스 이동
 interface BeforeInstallPromptEvent extends Event {
