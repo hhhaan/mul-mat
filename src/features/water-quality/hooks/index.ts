@@ -1,1 +1,1 @@
-export * from './useFetchWaterQuality';
+export * from './useWaterQuality';

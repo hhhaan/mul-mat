@@ -1,7 +1,11 @@
 import { SuggestionList, SearchInput, SearchButton } from '@/src/features/address-search';
 import { useAddressSearch } from '@/src/features/address-search/hooks/useAddressSearch';
+import { useRouter } from 'next/navigation';
+import { getLatestAvailableDate } from '@/src/shared/lib';
 
-export const SearchContainer = ({ setSelectedId }: { setSelectedId: (id: string) => void }) => {
+export const SearchContainer = () => {
+    const router = useRouter();
+
     const {
         query,
         suggestions,
@@ -17,11 +21,10 @@ export const SearchContainer = ({ setSelectedId }: { setSelectedId: (id: string)
     } = useAddressSearch();
 
     const handleSearch = async () => {
-        try {
-            setSelectedId(selectedAddress?.idx ?? '');
-        } catch (error) {
-            console.error('Error fetching water quality:', error);
-        }
+        if (!selectedAddress?.idx) return;
+        const { year, month } = getLatestAvailableDate();
+
+        router.replace(`?id=${selectedAddress?.idx}&year=${year}&month=${month}`);
     };
 
     return (
