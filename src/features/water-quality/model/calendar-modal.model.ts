@@ -1,56 +1,58 @@
 // features/water-quality-view/model/calendar-modal.model.ts
 import { useState } from 'react';
-import { useDateStore } from './date-store';
+import { useQueryStates, parseAsInteger } from 'nuqs';
+import { getLatestAvailableDate, formatDateKey, isFutureDate } from '@/src/shared/lib';
 
 export const useCalendarModal = () => {
-    const { year, month, setYear, setMonth, latestDate } = useDateStore();
-    const [latestYear, latestMonth] = latestDate.split('-').map(Number);
+    const { year: latestYear, month: latestMonth } = getLatestAvailableDate();
+    const latestDate = formatDateKey(latestYear, latestMonth);
 
-    // 모달 내 선택 상태 즉, monthNames 인덱스
-    const [selectedYear, setSelectedYear] = useState(year);
-    const [selectedMonth, setSelectedMonth] = useState(month - 1);
+    // nuqs로 URL 상태 관리
+    const [{ year, month }, setParams] = useQueryStates({
+        year: parseAsInteger,
+        month: parseAsInteger,
+    });
 
     const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
 
+    // 모달 내 선택 상태 (0-based, monthNames 인덱스)
+    const [selectedYear, setSelectedYear] = useState(year ?? latestYear);
+    const [selectedMonth, setSelectedMonth] = useState(month ? month - 1 : latestMonth - 1);
+
     const handlePrevYear = () => {
-        setSelectedYear((prev: number) => prev - 1);
+        setSelectedYear((prev) => prev - 1);
     };
 
     const handleNextYear = () => {
         setSelectedYear((prevYear) => {
             const newYear = prevYear + 1;
             // 연도 이동 후 미래 월이면 강제로 조정
-            if (newYear === latestYear && selectedMonth > latestMonth - 1) {
+            if (isFutureDate(newYear, selectedMonth + 1)) {
                 setSelectedMonth(latestMonth - 1);
             }
             return newYear;
         });
     };
 
-    const isFutureDate = (month: number) => {
-        if (selectedYear === latestYear && month > latestMonth - 1) return true;
-        if (selectedYear && latestYear && selectedYear === latestYear && month > latestMonth) return true;
-        return false;
-    };
-
+    // 확인 버튼: URL 업데이트
     const applySelectedDate = () => {
-        setYear(selectedYear);
-        setMonth(selectedMonth + 1);
+        setParams({
+            year: selectedYear,
+            month: selectedMonth + 1,
+        });
     };
 
     return {
-        year,
-        month,
         selectedYear,
         selectedMonth,
         latestYear,
         latestMonth,
         latestDate,
         monthNames,
+        isFutureDate,
         setSelectedMonth,
         handlePrevYear,
         handleNextYear,
-        isFutureDate,
         applySelectedDate,
     };
 };

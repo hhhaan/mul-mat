@@ -2,8 +2,9 @@
 import { useState } from 'react';
 import { SearchContainer } from '@/src/widgets/search-container';
 import { evaluateWaterQualityStatus } from '@/src/features/water-quality/utils';
-import { FilterManagementAlert } from '@/src/features/recommned-filter/ui';
-import { useFetchWaterQuality } from '@/src/features/water-quality/hooks';
+import { FilterManagementAlert } from '@/src/features/filter-recommendations/ui';
+import { useWaterQuality } from '@/src/features/water-quality/hooks';
+import { addMonths, subMonths } from 'date-fns';
 
 import { Layout } from '@/src/widgets/page-layout';
 import { Header } from './ui/header';
@@ -18,15 +19,49 @@ import { Spinner } from '@/src/shared/ui';
 
 import { Droplet, ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
 import { WaterQualityData } from '@/src/features/water-quality/types';
-import { useDateStore } from '@/src/features/water-quality/model';
+import { useQueryStates, parseAsString } from 'nuqs';
+
+import { getLatestAvailableDate, formatDateKey } from '@/src/shared/lib';
 
 export const HomeScreen = () => {
-    const [selectedId, setSelectedId] = useState<string | undefined>();
     const [isCalenderOpen, setIsCalenderOpen] = useState(false);
 
-    const { year, month, latestDate, handlePrevMonth, handleNextMonth } = useDateStore();
+    const { year: latestYear, month: latestMonth } = getLatestAvailableDate();
+    const latestDate = formatDateKey(latestYear, latestMonth);
 
-    const { isLoading, waterQuality } = useFetchWaterQuality(selectedId);
+    const [{ id, year, month }, setParams] = useQueryStates({
+        id: parseAsString.withDefault(''),
+        year: parseAsString.withDefault(latestYear.toString()),
+        month: parseAsString.withDefault(latestMonth.toString()),
+    });
+
+    const { isLoading, waterQuality } = useWaterQuality(id, year, month);
+
+    const handlePrevMonth = () => {
+        const curDate = new Date(parseInt(year), parseInt(month) - 1, 1);
+        const prevDate = subMonths(curDate, 1);
+
+        setParams(
+            {
+                year: prevDate.getFullYear().toString(),
+                month: (prevDate.getMonth() + 1).toString(),
+            },
+            { clearOnDefault: false }
+        );
+    };
+
+    const handleNextMonth = () => {
+        const curDate = new Date(parseInt(year), parseInt(month), 1);
+        const nextDate = addMonths(curDate, 1);
+
+        setParams(
+            {
+                year: nextDate.getFullYear().toString(),
+                month: nextDate.getMonth().toString(),
+            },
+            { clearOnDefault: false }
+        );
+    };
 
     const handleOpenCalender = () => {
         setIsCalenderOpen(true);
@@ -48,7 +83,7 @@ export const HomeScreen = () => {
     return (
         <Layout>
             <Header />
-            <SearchContainer setSelectedId={setSelectedId} />
+            <SearchContainer />
 
             <div className="px-4 pb-4 flex-1">
                 {/* 수질 정보 카드 */}
@@ -74,6 +109,7 @@ export const HomeScreen = () => {
                                 <ChevronLeft
                                     size={20}
                                     onClick={() => {
+                                        console.log('tlq');
                                         handlePrevMonth();
                                     }}
                                 />
@@ -96,6 +132,7 @@ export const HomeScreen = () => {
                                 }`}
                                 disabled={latestDate === `${year}-${month}`}
                                 onClick={() => {
+                                    console.log(latestDate, `${year}-${month}`);
                                     if (latestDate !== `${year}-${month}`) {
                                         handleNextMonth();
                                     }

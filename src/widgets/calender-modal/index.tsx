@@ -89,7 +89,7 @@ export const CalendarModal = ({ isOpen, onClose }: CalendarModalProps) => {
                 <div className="grid grid-cols-3 gap-2 p-4">
                     {monthNames.map((name, idx) => {
                         const isSelected = idx === selectedMonth;
-                        const isFuture = isFutureDate(idx);
+                        const isFuture = isFutureDate(selectedYear, idx + 1);
 
                         return (
                             <div
