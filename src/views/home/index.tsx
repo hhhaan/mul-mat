@@ -1,10 +1,10 @@
 'use client';
+
 import { useState } from 'react';
 import { SearchContainer } from '@/src/widgets/search-container';
 import { evaluateWaterQualityStatus } from '@/src/features/water-quality/utils';
 import { FilterManagementAlert } from '@/src/features/filter-recommendations/ui';
-import { useWaterQuality } from '@/src/features/water-quality/hooks';
-import { addMonths, subMonths } from 'date-fns';
+import { useWaterQuality, useWaterQualityParams } from '@/src/features/water-quality/hooks';
 
 import { Layout } from '@/src/widgets/page-layout';
 import { Header } from './ui/header';
@@ -19,49 +19,23 @@ import { Spinner } from '@/src/shared/ui';
 
 import { Droplet, ChevronLeft, ChevronRight, Calendar, MapPin } from 'lucide-react';
 import { WaterQualityData } from '@/src/features/water-quality/types';
-import { useQueryStates, parseAsString } from 'nuqs';
-
-import { getLatestAvailableDate, formatDateKey } from '@/src/shared/lib';
 
 export const HomeScreen = () => {
+    const {
+        currentId,
+        currentYear,
+        currentMonth,
+        latestYear,
+        latestMonth,
+        latestDate,
+        handlePrevMonth,
+        handleNextMonth,
+        setParams,
+    } = useWaterQualityParams();
+
     const [isCalenderOpen, setIsCalenderOpen] = useState(false);
 
-    const { year: latestYear, month: latestMonth } = getLatestAvailableDate();
-    const latestDate = formatDateKey(latestYear, latestMonth);
-
-    const [{ id, year, month }, setParams] = useQueryStates({
-        id: parseAsString.withDefault(''),
-        year: parseAsString.withDefault(latestYear.toString()),
-        month: parseAsString.withDefault(latestMonth.toString()),
-    });
-
-    const { isLoading, waterQuality } = useWaterQuality(id, year, month);
-
-    const handlePrevMonth = () => {
-        const curDate = new Date(parseInt(year), parseInt(month) - 1, 1);
-        const prevDate = subMonths(curDate, 1);
-
-        setParams(
-            {
-                year: prevDate.getFullYear().toString(),
-                month: (prevDate.getMonth() + 1).toString(),
-            },
-            { clearOnDefault: false }
-        );
-    };
-
-    const handleNextMonth = () => {
-        const curDate = new Date(parseInt(year), parseInt(month), 1);
-        const nextDate = addMonths(curDate, 1);
-
-        setParams(
-            {
-                year: nextDate.getFullYear().toString(),
-                month: nextDate.getMonth().toString(),
-            },
-            { clearOnDefault: false }
-        );
-    };
+    const { isLoading, waterQuality } = useWaterQuality(currentId ?? '', currentYear ?? '', currentMonth ?? '');
 
     const handleOpenCalender = () => {
         setIsCalenderOpen(true);
@@ -83,7 +57,11 @@ export const HomeScreen = () => {
     return (
         <Layout>
             <Header />
-            <SearchContainer />
+            <SearchContainer
+                latestYear={latestYear}
+                latestMonth={latestMonth}
+                setParams={setParams}
+            />
 
             <div className="px-4 pb-4 flex-1">
                 {/* 수질 정보 카드 */}
@@ -121,19 +99,19 @@ export const HomeScreen = () => {
                                 <span className="absolute -inset-1 bg-sky-200 opacity-0 group-hover:opacity-30 rounded-md transition-opacity duration-300 animate-pulse"></span>
                                 <Calendar size={16} className="mr-1 text-sky-600 animate-bounce" />
                                 <span className="relative z-10">
-                                    {year}년 {month}월
+                                    {currentYear}년 {currentMonth}월
                                 </span>
                             </button>
                             <button
                                 className={`p-2 rounded-full transition-colors duration-200 ${
-                                    latestDate !== `${year}-${month}`
+                                    latestDate !== `${currentYear}-${currentMonth}`
                                         ? 'text-sky-600 hover:bg-sky-100 active:bg-sky-200'
                                         : 'text-gray-400 bg-gray-100 cursor-not-allowed'
                                 }`}
-                                disabled={latestDate === `${year}-${month}`}
+                                disabled={latestDate === `${currentYear}-${currentMonth}`}
                                 onClick={() => {
-                                    console.log(latestDate, `${year}-${month}`);
-                                    if (latestDate !== `${year}-${month}`) {
+                                    console.log(latestDate, `${currentYear}-${currentMonth}`);
+                                    if (latestDate !== `${currentYear}-${currentMonth}`) {
                                         handleNextMonth();
                                     }
                                 }}

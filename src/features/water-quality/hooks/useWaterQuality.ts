@@ -1,18 +1,33 @@
 'use client';
 
-// import { useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { fetchWaterQualityData } from '@/src/features/water-quality/api';
-// import { formatMonth, formatYear, getPreviousMonth } from '@/src/features/water-quality/utils';
-// import { useSearchParams, useRouter } from 'next/navigation';
-// import { useQueryState } from 'nuqs';
+import { useEffect } from 'react';
 
 export const useWaterQuality = (selectedId: string, year: string, month: string) => {
-    const { data: waterQuality, isLoading } = useQuery({
-        queryKey: ['waterQuality', selectedId, year, month], // 쿼리 키에 최종 결정된 'selectedId'를 사용
+    const {
+        data: waterQuality,
+        isLoading,
+        error,
+    } = useQuery({
+        queryKey: ['waterQuality', selectedId, year, month],
         queryFn: () => fetchWaterQualityData({ id: selectedId, year, month }),
-        enabled: !!selectedId, // 'selectedId'가 존재할 때만 쿼리 실행 (selectedselectedId 또는 URL 파라미터)
+        enabled: !!selectedId && !!year && !!month,
+        retry: (failureCount, error) => {
+            // '데이터 없음' 에러의 경우 재시도하지 않음
+            if (error.message.includes('수질 데이터를 찾을 수 없습니다')) {
+                return false;
+            }
+            // 그 외 다른 에러는 2번까지 재시도
+            return failureCount < 2;
+        },
     });
+
+    useEffect(() => {
+        if (error && error.message.includes('수질 데이터를 찾을 수 없습니다')) {
+            alert('수질 데이터를 찾을 수 없습니다.');
+        }
+    }, [error]);
 
     return {
         isLoading,
