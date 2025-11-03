@@ -1,11 +1,16 @@
 import { SuggestionList, SearchInput, SearchButton } from '@/src/features/address-search';
 import { useAddressSearch } from '@/src/features/address-search/hooks/useAddressSearch';
-import { useRouter } from 'next/navigation';
-import { getLatestAvailableDate } from '@/src/shared/lib';
+import { useQueryStates } from 'nuqs';
 
-export const SearchContainer = () => {
-    const router = useRouter();
-
+export const SearchContainer = ({
+    latestYear,
+    latestMonth,
+    setParams,
+}: {
+    latestYear: number;
+    latestMonth: number;
+    setParams: ReturnType<typeof useQueryStates>[1];
+}) => {
     const {
         query,
         suggestions,
@@ -22,9 +27,12 @@ export const SearchContainer = () => {
 
     const handleSearch = async () => {
         if (!selectedAddress?.idx) return;
-        const { year, month } = getLatestAvailableDate();
 
-        router.replace(`?id=${selectedAddress?.idx}&year=${year}&month=${month}`);
+        setParams({
+            id: selectedAddress.idx,
+            year: latestYear.toString(),
+            month: latestMonth.toString(),
+        });
     };
 
     return (

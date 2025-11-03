@@ -34,7 +34,7 @@ export async function fetchWaterQualityData(
             return null;
         }
 
-        console.log(items.find((items: WaterQualityItem) => items.FCLT_NAM === fclt_nm));
+        // console.log(items.find((items: WaterQualityItem) => items.FCLT_NAM === fclt_nm));
 
         return items.find((item: WaterQualityItem) => item.FCLT_NAM === fclt_nm) || null;
     } catch (error) {
