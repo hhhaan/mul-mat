@@ -11,7 +11,7 @@ export const useLatestDate = () => {
             if (!res.ok) throw new Error('Failed to fetch');
             return res.json();
         },
-        staleTime: 1000 * 60 * 60, // 1시간 캐싱
-        gcTime: 1000 * 60 * 60 * 24, // 24시간 보관
+        staleTime: 24 * 60 * 60 * 1000, // 24시간 캐싱
+        gcTime: 32 * 60 * 60 * 1000,
     });
 };

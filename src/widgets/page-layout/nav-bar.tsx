@@ -11,7 +11,6 @@ export const NavBar = () => {
         if (path === '/') return 'search';
         if (path === '/calculator') return 'calculator';
         if (path === '/bottled-water') return 'quality';
-        // if (path === '/my-page') return 'cafe';
         return 'search';
     };
 
@@ -56,18 +55,6 @@ export const NavBar = () => {
                         <Droplets size={20} />
                         <span className="text-xs mt-1">수질정보</span>
                     </button>
-
-                    {/* <button
-                        className={`flex flex-col items-center p-2 ${
-                            activeTab === 'cafe' ? 'text-sky-500' : 'text-gray-600'
-                        }`}
-                        onClick={() => {
-                            router.push('/my-page');
-                        }}
-                    >
-                        <Coffee size={20} />
-                        <span className="text-xs mt-1">마이페이지</span>
-                    </button> */}
                 </div>
             </nav>
         </div>

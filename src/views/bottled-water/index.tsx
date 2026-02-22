@@ -2,35 +2,35 @@
 
 import { useState, useEffect } from 'react';
 import { Droplet, TrendingUp, Info, Activity } from 'lucide-react';
+import Link from 'next/link';
 import { Layout } from '@/src/widgets/page-layout';
-import { bottledWaterData } from './model/water-data';
 import { parseAndAverage } from './utils';
 import { BottledWater } from './model/types';
 
-// 정적 데이터 전달 목적인 페이지이기 때문에 과도한 컴포넌트 분리를 하지 않았습니다.
+interface BottledWaterViewProps {
+    selectedWater: BottledWater;
+    allWaterData: BottledWater[];
+}
 
-export const BottledWaterScreen = () => {
-    const [selectedWaterId, setSelectedWaterId] = useState<number>(bottledWaterData[0].id);
-    const selectedWater = bottledWaterData.find((w) => w.id === selectedWaterId)!;
-
+export const BottledWaterView = ({ selectedWater, allWaterData }: BottledWaterViewProps) => {
     return (
         <Layout>
             <div className="w-full">
                 {/* 물 선택 탭 */}
                 <div className="px-4 pt-4 pb-2">
                     <div className="flex overflow-x-auto gap-2 pb-1" style={{ scrollbarWidth: 'none' }}>
-                        {bottledWaterData.map((water) => (
-                            <button
+                        {allWaterData.map((water) => (
+                            <Link
                                 key={water.id}
-                                onClick={() => setSelectedWaterId(water.id)}
+                                href={`/bottled-water/${water.id}`}
                                 className={`flex-shrink-0 px-4 py-2 rounded-full text-sm font-medium transition-all whitespace-nowrap ${
-                                    selectedWaterId === water.id
+                                    selectedWater.id === water.id
                                         ? `${water.bgColor} text-white shadow-md`
                                         : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                                 }`}
                             >
                                 {water.name}
-                            </button>
+                            </Link>
                         ))}
                     </div>
                 </div>
