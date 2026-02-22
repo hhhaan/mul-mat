@@ -6,17 +6,22 @@ const MAX_RETRIES = 3;
 
 export const revalidate = 86400; // 24시간 (3600 * 24)
 
-async function fetchWithRetry(url: string, retries = MAX_RETRIES): Promise<Response> {
-    for (let i = 0; i < retries; i++) {
-        try {
-            const response = await fetch(url);
-            if (response.ok) return response;
-        } catch (error) {
-            if (i === retries - 1) throw error;
+const fetchWithParallelRetry = async (url: string, retries = MAX_RETRIES) => {
+    // 병렬로 3개 동시 발송
+    const promises = Array.from({ length: retries }, () => fetch(url, { cache: 'no-store' })); // 캐시 무효화
+
+    const results = await Promise.allSettled(promises);
+
+    // 성공한 응답 찾기
+    for (const result of results) {
+        if (result.status === 'fulfilled' && result.value.ok) {
+            return result.value; // 첫 번째 성공 반환
         }
     }
-    throw new Error('Max retries exceeded');
-}
+
+    // 모두 실패
+    throw new Error('All parallel requests failed');
+};
 
 export async function GET() {
     let currentDate = new Date();
@@ -33,7 +38,7 @@ export async function GET() {
         // console.log(apiUrl);
 
         try {
-            const response = await fetchWithRetry(apiUrl);
+            const response = await fetchWithParallelRetry(apiUrl);
             const json = await response.json();
             const items = json.response?.body?.items;
 
