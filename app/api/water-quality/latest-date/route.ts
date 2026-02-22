@@ -2,6 +2,21 @@ import { NextResponse } from 'next/server';
 import { subMonths, getYear, getMonth } from 'date-fns';
 
 const MAX_SEARCH_MONTHS = 6;
+const MAX_RETRIES = 3;
+
+export const revalidate = 86400; // 24시간 (3600 * 24)
+
+async function fetchWithRetry(url: string, retries = MAX_RETRIES): Promise<Response> {
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(url);
+            if (response.ok) return response;
+        } catch (error) {
+            if (i === retries - 1) throw error;
+        }
+    }
+    throw new Error('Max retries exceeded');
+}
 
 export async function GET() {
     let currentDate = new Date();
@@ -15,18 +30,10 @@ export async function GET() {
         const apiUrl = `https://apis.data.go.kr/B500001/qltWtrSvc/MonPurification?serviceKey=${process.env.WATER_QUALITY_API_KEY}&pageNo=1&viewType=json&year=${year}&month=${paddedMonth}&BSI=%EC%84%9C%EC%9A%B8%ED%8A%B9%EB%B3%84%EC%8B%9C&SIGUN=
 `;
 
-        console.log(apiUrl);
+        // console.log(apiUrl);
 
         try {
-            const response = await fetch(apiUrl, {
-                next: { revalidate: 3600 },
-            });
-
-            if (!response.ok) {
-                currentDate = subMonths(currentDate, 1);
-                continue;
-            }
-
+            const response = await fetchWithRetry(apiUrl);
             const json = await response.json();
             const items = json.response?.body?.items;
 
