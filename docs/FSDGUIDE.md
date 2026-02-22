@@ -32,24 +32,11 @@ src/
 
 ## Layer 별 책임
 
-### App Layer
-
--   애플리케이션 초기화, 전역 상태 관리, 프로바이더 설정을 담당합니다.
-
-```jsx
-// src/app/providers/provider.tsx
-import { AuthProvider } from './auth-provider';
-
-export const App = ({ children }) => {
-    return <AuthProvider>{children}</AuthProvider>;
-};
-```
-
 ### Pages Layer
 
--   라우팅 및 레이아웃 관리
--   Widgets, Features의 ui 블록들을 조립해 페이지를 구성합니다.
--   비즈니스 로직이나 상태 관리는 전부 `features` , `entities`, `widgets` 에서 처리되도록 합니다.
+- 라우팅 및 레이아웃 관리
+- Widgets, Features의 ui 블록들을 조립해 페이지를 구성합니다.
+- 비즈니스 로직이나 상태 관리는 전부 `features` , `entities`, `widgets` 에서 처리되도록 합니다.
 
 ```jsx
 // src/pages/favorite/index.tsx
@@ -87,10 +74,10 @@ export const FavoriteScreen = () => {
 
 ### Widgets Layer
 
--   특정 도메인의 UI 블록을 조합한 **재사용 가능한 컴포넌트 단위**입니다.
--   `features`, `entities`에서 제공하는 로직 및 데이터를 조합하여 **페이지에서 직접 사용 가능한 시각적 블록**을 구성합니다.
--   예: `Layout`, `RestaurantCard`, `UserProfileCard` 등
--   비즈니스 로직은 `features` 혹은 `entities`에서 처리하고, **widgets는 UI 중심으로 구성**되도록 합니다.
+- 특정 도메인의 UI 블록을 조합한 **재사용 가능한 컴포넌트 단위**입니다.
+- `features`, `entities`에서 제공하는 로직 및 데이터를 조합하여 **페이지에서 직접 사용 가능한 시각적 블록**을 구성합니다.
+- 예: `Layout`, `RestaurantCard`, `UserProfileCard` 등
+- 비즈니스 로직은 `features` 혹은 `entities`에서 처리하고, **widgets는 UI 중심으로 구성**되도록 합니다.
 
 ```jsx
 // src/widgets/layout/index.tsx
@@ -118,9 +105,9 @@ export const Layout = ({ children }: { children: React.ReactNode }) => {
 
 ### Features Layer
 
--   사용자의 인터랙션과 관련된 **단일 기능 단위**를 담당합니다.
--   하나의 목적을 가진 UI, 로직, 상태, API 등을 하나의 슬라이스로 구성합니다.
--   예: 즐겨찾기 토글, 로그인 처리, 검색 기능 등
+- 사용자의 인터랙션과 관련된 **단일 기능 단위**를 담당합니다.
+- 하나의 목적을 가진 UI, 로직, 상태, API 등을 하나의 슬라이스로 구성합니다.
+- 예: 즐겨찾기 토글, 로그인 처리, 검색 기능 등
 
 ```jsx
 // src/features/favorite/ui/favorite-button/index.tsx
@@ -189,11 +176,11 @@ export const FavoriteButton = ({ isFavorite, isProcessing, onToggle }: FavoriteB
 
 ### Entities Layer
 
--   도메인 중심의 **비즈니스 엔티티**를 정의하는 레이어입니다.
--   API, 상태, 타입, 유틸리티 등 **특정 도메인(예: User, Restaurant)** 과 직접적으로 연결된 로직을 포함합니다.
--   예: 사용자 정보, 레스토랑 정보, 상품 정보 등
--   상태 관리는 주로 `model/store.ts`에서, 타입은 `model/types.ts` 또는 `types.ts`에서 정의합니다.
--   여러 feature에서 공통으로 사용하는 **핵심 데이터 단위**를 제공하며, 로직의 재사용성과 일관성을 높입니다.
+- 도메인 중심의 **비즈니스 엔티티**를 정의하는 레이어입니다.
+- API, 상태, 타입, 유틸리티 등 **특정 도메인(예: User, Restaurant)** 과 직접적으로 연결된 로직을 포함합니다.
+- 예: 사용자 정보, 레스토랑 정보, 상품 정보 등
+- 상태 관리는 주로 `model/store.ts`에서, 타입은 `model/types.ts` 또는 `types.ts`에서 정의합니다.
+- 여러 feature에서 공통으로 사용하는 **핵심 데이터 단위**를 제공하며, 로직의 재사용성과 일관성을 높입니다.
 
 ```jsx
 entities/restaurant/                # 레스토랑 엔티티
@@ -214,7 +201,7 @@ entities/restaurant/                # 레스토랑 엔티티
 
 ### Shared Layer
 
--   공유 유틸리티와 UI 키트를 담당합니다. 프로젝트 전체에서 사용되는 공통 기능을 제공합니다.
+- 공유 유틸리티와 UI 키트를 담당합니다. 프로젝트 전체에서 사용되는 공통 기능을 제공합니다.
 
 ```jsx
 // src/shared/utils/axios/axiosClient.ts
@@ -263,18 +250,17 @@ favorite/
 
 ## 파일 및 폴더 이름 규칙
 
--   슬라이스 폴더명: `kebab-case` 사용 (예: `user`, `user-settings`)
--   레이어 내부 폴더: 기능이나 도메인을 나타내는 명사로 명명 (예: `auth`, `favorite`)
--   계층을 나타내는 단어(page, widget 등)는 폴더명에 포함하지 않음
--   컴포넌트 파일: `kebab-case` 사용 (예:`favorite-button.tsx` , `restaurant-card.tsx` )
--   기타 파일: `camelCase` 사용 (예: `useFavoriteToggle.ts` )
--   인덱스 파일: `index.ts` 사용
+- 슬라이스 폴더명: `kebab-case` 사용 (예: `user`, `user-settings`)
+- 레이어 내부 폴더: 기능이나 도메인을 나타내는 명사로 명명 (예: `auth`, `favorite`)
+- 계층을 나타내는 단어(page, widget 등)는 폴더명에 포함하지 않음
+- 컴포넌트 파일: `kebab-case` 사용 (예:`favorite-button.tsx` , `restaurant-card.tsx` )
+- 기타 파일: `camelCase` 사용 (예: `useFavoriteToggle.ts` )
+- 인덱스 파일: `index.ts` 사용
 
 ### 컴포넌트 이름 규칙
 
--   컴포넌트는 항상 명사형의 PascalCase로 명명 (예: `FavoriteButton`, `RestaurantCard`)
--   커스텀 훅은 항상 `use` 접두사로 시작 (예: `useFavoriteToggle`, `useFavoriteRestaurants`)
--   컨텍스트 제공자는 `Provider` 접미사 사용 (예: `AuthProvider`)
+- 컴포넌트는 항상 명사형의 PascalCase로 명명 (예: `FavoriteButton`, `RestaurantCard`)
+- 커스텀 훅은 항상 `use` 접두사로 시작 (예: `useFavoriteToggle`, `useFavoriteRestaurants`)
 
 예시
 
