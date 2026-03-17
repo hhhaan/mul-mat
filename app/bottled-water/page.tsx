@@ -8,7 +8,6 @@ export const metadata: Metadata = {
 };
 
 export default function BottledWaterPage() {
-    // 기본적으로 첫 번째 생수 데이터를 보여줍니다.
     const defaultWater = bottledWaterData[0];
 
     return <BottledWaterView selectedWater={defaultWater} allWaterData={bottledWaterData} />;
